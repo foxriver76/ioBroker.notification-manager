@@ -27,6 +27,22 @@ class NotificationManager extends utils.Adapter {
     this.on("ready", this.onReady.bind(this));
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("unload", this.onUnload.bind(this));
+    this.on("message", this.onMessage.bind(this));
+  }
+  async onMessage(obj) {
+    if (obj.command === "getCategories") {
+      const res = this.sendToHostAsync(this.host, "getNotifications");
+      this.log.warn(JSON.stringify(res));
+      this.sendTo(obj.from, obj.command, { res }, obj.callback);
+      return;
+    }
+    if (obj.command === "getHostname") {
+      this.sendTo(obj.from, obj.command, { host: this.host }, obj.callback);
+      return;
+    }
+    if (obj.command === "getSupportedMessengers") {
+      return;
+    }
   }
   async onReady() {
     this.log.info("Starting notifications manager ...");

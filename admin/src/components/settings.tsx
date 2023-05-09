@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import I18n from '@iobroker/adapter-react-v5/i18n';
+import { Connection } from '@iobroker/socket-client';
 
 const styles = (): Record<string, CreateCSSProperties> => ({
     input: {
@@ -134,6 +135,38 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 {this.renderInput('option2', 'option2', 'text')}
             </form>
         );
+    }
+
+    /**
+     * React lifecycle hook, called when mounted
+     */
+    async componentDidMount() {
+        console.log('get hostname');
+
+        const conn = new Connection({});
+
+        await conn.waitForFirstConnection();
+        const namespace = this.getNamespace();
+
+        console.log(namespace);
+
+        try {
+            const data = await conn.sendTo(namespace, 'getHostname');
+            console.log(data.host);
+
+            const categories = await conn.sendTo(namespace, 'getCategories');
+            console.log(categories);
+        } catch (e: any) {
+            console.error(`Backend communication failed: ${e.message}`);
+        }
+    }
+
+    /**
+     * Extract adapter namespace from url
+     */
+    getNamespace(): string {
+        // TODO: find a way to get the ns dynamically
+        return 'notification-manager.0';
     }
 }
 
