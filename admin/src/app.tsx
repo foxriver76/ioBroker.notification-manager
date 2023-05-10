@@ -44,7 +44,13 @@ class App extends GenericApp {
 
         return (
             <div className="App">
-                <Settings native={this.state.native} onChange={(attr, value) => this.updateNativeValue(attr, value)} />
+                <Settings
+                    native={this.state.native}
+                    onChange={(attr, value) => this.updateNativeValue(attr, value)}
+                    namespace={`${this.adapterName}.${this.instance}`}
+                    language={this._systemConfig.language}
+                    theme={this.state.themeType as 'dark' | 'light'}
+                />
                 {this.renderError()}
                 {this.renderToast()}
                 {this.renderSaveCloseButtons()}

@@ -18,6 +18,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var utils = __toESM(require("@iobroker/adapter-core"));
+var import_fs = __toESM(require("fs"));
 class NotificationManager extends utils.Adapter {
   constructor(options = {}) {
     super({
@@ -31,9 +32,12 @@ class NotificationManager extends utils.Adapter {
   }
   async onMessage(obj) {
     if (obj.command === "getCategories") {
-      const res = this.sendToHostAsync(this.host, "getNotifications");
-      this.log.warn(JSON.stringify(res));
-      this.sendTo(obj.from, obj.command, { res }, obj.callback);
+      const ioPackPath = require.resolve("iobroker.js-controller/io-package.json");
+      const content = await import_fs.default.promises.readFile(ioPackPath, {
+        encoding: "utf-8"
+      });
+      const ioPack = JSON.parse(content);
+      this.sendTo(obj.from, obj.command, { notifications: ioPack.notifications }, obj.callback);
       return;
     }
     if (obj.command === "getHostname") {

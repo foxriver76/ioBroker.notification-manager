@@ -45,16 +45,44 @@ const styles = (): Record<string, CreateCSSProperties> => ({
     },
 });
 
+interface NotificationsConfig {
+    notifications: Notifications[];
+}
+
+interface Notifications {
+    /** the scope id */
+    scope: string;
+    description: Record<string, string>;
+    name: Record<string, string>;
+    categories: NotificationCategory[];
+}
+
+interface NotificationCategory {
+    /** the category id */
+    category: string;
+    severity: 'alert' | 'notify' | 'info';
+    description: Record<string, string>;
+    name: Record<string, string>;
+    limit: number;
+    regex: RegExp[];
+}
+
 interface SettingsProps {
     classes: Record<string, string>;
+    /** The io-pack native attributes */
     native: Record<string, any>;
-
     onChange: (attr: string, value: any) => void;
+    /** the adapter namespace */
+    namespace: string;
+    /** the active language */
+    language: string;
+    /** the active theme */
+    theme: 'dark' | 'light';
 }
 
 interface SettingsState {
-    // add your state properties here
-    dummy?: undefined;
+    /** The notifications config from controller */
+    notificationsConfig?: NotificationsConfig;
 }
 
 class Settings extends React.Component<SettingsProps, SettingsState> {
@@ -128,11 +156,19 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     }
 
     render() {
+        if (!this.state.notificationsConfig) {
+            return null;
+        }
+
         return (
             <form className={this.props.classes.tab}>
-                {this.renderCheckbox('option1', 'option1')}
-                <br />
-                {this.renderInput('option2', 'option2', 'text')}
+                {this.state.notificationsConfig.notifications.map((scope) => {
+                    return (
+                        <p style={{ color: this.getTextColor() }} key={scope.scope}>
+                            {scope.name[this.props.language]}
+                        </p>
+                    );
+                })}
             </form>
         );
     }
@@ -141,32 +177,23 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * React lifecycle hook, called when mounted
      */
     async componentDidMount() {
-        console.log('get hostname');
-
         const conn = new Connection({});
 
         await conn.waitForFirstConnection();
-        const namespace = this.getNamespace();
-
-        console.log(namespace);
 
         try {
-            const data = await conn.sendTo(namespace, 'getHostname');
-            console.log(data.host);
-
-            const categories = await conn.sendTo(namespace, 'getCategories');
-            console.log(categories);
+            const notificationsConfig = await conn.sendTo(this.props.namespace, 'getCategories');
+            this.setState({ notificationsConfig });
         } catch (e: any) {
             console.error(`Backend communication failed: ${e.message}`);
         }
     }
 
     /**
-     * Extract adapter namespace from url
+     * Get text color according to theme
      */
-    getNamespace(): string {
-        // TODO: find a way to get the ns dynamically
-        return 'notification-manager.0';
+    getTextColor(): string {
+        return this.props.theme === 'dark' ? 'white' : 'black';
     }
 }
 

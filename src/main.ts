@@ -1,4 +1,5 @@
 import * as utils from '@iobroker/adapter-core';
+import fs from 'fs';
 
 class NotificationManager extends utils.Adapter {
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
@@ -17,10 +18,15 @@ class NotificationManager extends utils.Adapter {
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
         if (obj.command === 'getCategories') {
-            const res = this.sendToHostAsync(this.host, 'getNotifications');
+            const ioPackPath = require.resolve('iobroker.js-controller/io-package.json');
 
-            this.log.warn(JSON.stringify(res));
-            this.sendTo(obj.from, obj.command, { res }, obj.callback);
+            const content = await fs.promises.readFile(ioPackPath, {
+                encoding: 'utf-8',
+            });
+
+            const ioPack = JSON.parse(content);
+
+            this.sendTo(obj.from, obj.command, { notifications: ioPack.notifications }, obj.callback);
             return;
         }
 
