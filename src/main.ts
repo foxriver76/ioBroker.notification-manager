@@ -61,7 +61,7 @@ class NotificationManager extends utils.Adapter {
     /**
      * Is called if a subscribed state changes
      */
-    private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
+    private onStateChange(_id: string, _state: ioBroker.State | null | undefined): void {
         // TODO: the notifications object has changed, check if a new notification has been registered
         // we need to cache the notifications object up from adapter start to check what is new
         // or we decide to clear the notifications in every case if we handled them, so that
