@@ -51,11 +51,13 @@ const styles = (): Record<string, CreateCSSProperties> => ({
         //background: "#d2d2d2",
         marginBottom: 5,
     },
+    settingsRoot: {
+        height: '100%',
+        overflow: 'scroll',
+    },
 });
 
-interface NotificationsConfig {
-    notifications: Notifications[];
-}
+type NotificationsConfig = Notifications[];
 
 interface Notifications {
     /** the scope id */
@@ -93,12 +95,14 @@ interface SettingsState {
     notificationsConfig?: NotificationsConfig;
     /** id for each card and open status */
     cardOpen: Record<string, boolean>;
+    /** all instances that can be used to handle notifications */
+    supportedAdapterInstances: string[];
 }
 
 class Settings extends React.Component<SettingsProps, SettingsState> {
     constructor(props: SettingsProps) {
         super(props);
-        this.state = { cardOpen: {} };
+        this.state = { cardOpen: {}, supportedAdapterInstances: [] };
     }
 
     renderInput(title: AdminWord, attr: string, type: string) {
@@ -215,7 +219,18 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     {this.renderAdapterSelect(
                                         'firstAdapter',
                                         'Test',
-                                        [{ value: 'test', title: 'test' }],
+                                        this.state.supportedAdapterInstances.map((instance) => {
+                                            return { value: instance, title: instance };
+                                        }),
+                                        {},
+                                    )}
+                                    <br />
+                                    {this.renderAdapterSelect(
+                                        'secondAdapter',
+                                        'Test',
+                                        this.state.supportedAdapterInstances.map((instance) => {
+                                            return { value: instance, title: instance };
+                                        }),
                                         {},
                                     )}
                                 </Container>
@@ -234,14 +249,16 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 
         return (
             <form className={this.props.classes.tab}>
-                {this.state.notificationsConfig.notifications.map((scope) => {
+                {this.state.notificationsConfig.map((scope) => {
                     return (
-                        <h2 style={{ color: this.getTextColor(), margin: 10 }} key={scope.scope}>
-                            {scope.name[this.props.language]}
+                        <div key={'settings-root'} className={this.props.classes.settingsRoot}>
+                            <h2 style={{ color: this.getTextColor(), margin: 10 }} key={scope.scope}>
+                                {scope.name[this.props.language]}
+                            </h2>
                             {scope.categories.map((category) => {
                                 return this.renderCategoryCard(category);
                             })}
-                        </h2>
+                        </div>
                     );
                 })}
             </form>
@@ -257,8 +274,12 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         await conn.waitForFirstConnection();
 
         try {
-            const notificationsConfig = await conn.sendTo(this.props.namespace, 'getCategories');
-            this.setState({ notificationsConfig });
+            const { notifications: notificationsConfig } = await conn.sendTo(this.props.namespace, 'getCategories');
+            const { instances: supportedAdapterInstances } = await conn.sendTo(
+                this.props.namespace,
+                'getSupportedMessengers',
+            );
+            this.setState({ notificationsConfig, supportedAdapterInstances });
         } catch (e: any) {
             console.error(`Backend communication failed: ${e.message}`);
         }

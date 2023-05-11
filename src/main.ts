@@ -30,13 +30,18 @@ class NotificationManager extends utils.Adapter {
             return;
         }
 
-        if (obj.command === 'getHostname') {
-            this.sendTo(obj.from, obj.command, { host: this.host }, obj.callback);
-            return;
-        }
-
         if (obj.command === 'getSupportedMessengers') {
-            // TODO
+            const res = await this.getObjectViewAsync('system', 'instance', {
+                startkey: 'system.adapter.',
+                endkey: 'system.adapter.\u9999',
+            });
+
+            const instances = res.rows
+                // @ts-expect-error types are wrong
+                .filter((row) => row.value?.common.type === 'messaging')
+                .map((obj) => obj.id.substring('system.adapter.'.length));
+
+            this.sendTo(obj.from, obj.command, { instances }, obj.callback);
             return;
         }
     }
