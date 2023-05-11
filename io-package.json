@@ -75,7 +75,9 @@
             }
         ]
     },
-    "native": {},
+    "native": {
+        "categories": {}
+    },
     "objects": [],
     "instanceObjects": []
 }

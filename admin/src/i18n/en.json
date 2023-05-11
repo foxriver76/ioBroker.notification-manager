@@ -1,5 +1,6 @@
 {
     "notification-manager adapter settings": "Adapter settings for notification-manager",
     "firstAdapter": "First adapter",
-    "secondAdapter": "Second adapter"
+    "secondAdapter": "Second adapter",
+    "notRunning": "Please start the adapter first!"
 }

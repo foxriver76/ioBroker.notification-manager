@@ -57,7 +57,25 @@ const styles = (): Record<string, CreateCSSProperties> => ({
     },
 });
 
+interface ConfiguredCategories {
+    [scope: string]: {
+        [category: string]: {
+            /** Try to first let this adapter handle the notification */
+            firstAdapter: string;
+            /** If first adapter fails, try this one */
+            secondAdapter: string;
+        };
+    };
+}
+
+/** e.g. "scope.category.firstAdapter" */
+type ConfigurationCategoryAttribute = `${string}.${string}.${string}`;
+
 type NotificationsConfig = Notifications[];
+
+export interface AdapterNative {
+    categories: ConfiguredCategories;
+}
 
 interface Notifications {
     /** the scope id */
@@ -80,7 +98,7 @@ interface NotificationCategory {
 interface SettingsProps {
     classes: Record<string, string>;
     /** The io-pack native attributes */
-    native: Record<string, any>;
+    native: AdapterNative;
     onChange: (attr: string, value: any) => void;
     /** the adapter namespace */
     namespace: string;
@@ -122,16 +140,19 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * Renders the adapter selection checkbox
      *
      * @param title the title from i18n
-     * @param attr TODO
+     * @param attr the attribute path of native
      * @param options title and value of every option
      * @param style additional css style
      */
     renderAdapterSelect(
         title: AdminWord,
-        attr: string,
+        attr: ConfigurationCategoryAttribute,
         options: { value: string; title: string }[],
         style?: React.CSSProperties,
     ) {
+        const [scope, category, adapterOrder] = attr.split('.');
+        console.info(this.props.native);
+
         return (
             <FormControl
                 className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
@@ -141,8 +162,11 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 }}
             >
                 <Select
-                    value={this.props.native[attr] || '_'}
-                    onChange={(e) => this.props.onChange(attr, e.target.value === '_' ? '' : e.target.value)}
+                    value={this.props.native[scope]?.[category]?.[adapterOrder] || '_'}
+                    onChange={(e) => {
+                        const val = this.preprocessAdapterSelection(attr, e.target.value === '_' ? '' : e.target.value);
+                        this.props.onChange('categories', val);
+                    }}
                     input={<Input name={attr} id={attr + '-helper'} />}
                 >
                     {options.map((item) => (
@@ -154,6 +178,30 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 <FormHelperText>{I18n.t(title)}</FormHelperText>
             </FormControl>
         );
+    }
+
+    /**
+     * Preprocess single selection to extend the global native object
+     *
+     * @param attrPath path to the attribute like "scope.category.firstAdapter"
+     * @param value the adapter instance
+     */
+    preprocessAdapterSelection(attrPath: ConfigurationCategoryAttribute, value: unknown): ConfiguredCategories {
+        const [scope, category, adapterOrder] = attrPath.split('.');
+
+        const categories = this.props.native.categories;
+
+        if (!categories[scope]) {
+            categories[scope] = {};
+        }
+
+        if (!categories[scope][category]) {
+            categories[scope][category] = { firstAdapter: '', secondAdapter: '' };
+        }
+
+        categories[scope][category][adapterOrder] = value;
+
+        return categories;
     }
 
     renderCheckbox(title: AdminWord, attr: string, style?: React.CSSProperties) {
@@ -180,9 +228,10 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     /**
      * Render a card for the category
      *
+     * @param scopeId id of the scope
      * @param category the notification category to render card for
      */
-    renderCategoryCard(category: NotificationCategory) {
+    renderCategoryCard(scopeId: string, category: NotificationCategory) {
         const elementId = category.name['en'];
 
         return (
@@ -217,8 +266,8 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     {category.description[this.props.language]}
                                     <br />
                                     {this.renderAdapterSelect(
-                                        'firstAdapter',
-                                        'Test',
+                                        `firstAdapter`,
+                                        `${scopeId}.${category.category}.firstAdapter`,
                                         this.state.supportedAdapterInstances.map((instance) => {
                                             return { value: instance, title: instance };
                                         }),
@@ -227,7 +276,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     <br />
                                     {this.renderAdapterSelect(
                                         'secondAdapter',
-                                        'Test',
+                                        `${scopeId}.${category.category}.secondAdapter`,
                                         this.state.supportedAdapterInstances.map((instance) => {
                                             return { value: instance, title: instance };
                                         }),
@@ -242,9 +291,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         );
     }
 
-    render() {
+    render(): React.JSX.Element {
         if (!this.state.notificationsConfig) {
-            return null;
+            return (
+                <div>
+                    <h2>{I18n.t('notRunning')}</h2>
+                </div>
+            );
         }
 
         return (
@@ -256,7 +309,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                 {scope.name[this.props.language]}
                             </h2>
                             {scope.categories.map((category) => {
-                                return this.renderCategoryCard(category);
+                                return this.renderCategoryCard(scope.scope, category);
                             })}
                         </div>
                     );
