@@ -11,6 +11,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import I18n from '@iobroker/adapter-react-v5/i18n';
 import { Connection } from '@iobroker/socket-client';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const styles = (): Record<string, CreateCSSProperties> => ({
     input: {
@@ -21,8 +29,8 @@ const styles = (): Record<string, CreateCSSProperties> => ({
         marginRight: 20,
     },
     card: {
-        maxWidth: 345,
-        textAlign: 'center',
+        textAlign: 'left',
+        margin: 10,
     },
     media: {
         height: 180,
@@ -83,12 +91,14 @@ interface SettingsProps {
 interface SettingsState {
     /** The notifications config from controller */
     notificationsConfig?: NotificationsConfig;
+    /** id for each card and open status */
+    cardOpen: Record<string, boolean>;
 }
 
 class Settings extends React.Component<SettingsProps, SettingsState> {
     constructor(props: SettingsProps) {
         super(props);
-        this.state = {};
+        this.state = { cardOpen: {} };
     }
 
     renderInput(title: AdminWord, attr: string, type: string) {
@@ -104,10 +114,18 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         );
     }
 
-    renderSelect(
+    /**
+     * Renders the adapter selection checkbox
+     *
+     * @param title the title from i18n
+     * @param attr TODO
+     * @param options title and value of every option
+     * @param style additional css style
+     */
+    renderAdapterSelect(
         title: AdminWord,
         attr: string,
-        options: { value: string; title: AdminWord }[],
+        options: { value: string; title: string }[],
         style?: React.CSSProperties,
     ) {
         return (
@@ -125,7 +143,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 >
                     {options.map((item) => (
                         <MenuItem key={'key-' + item.value} value={item.value || '_'}>
-                            {I18n.t(item.title)}
+                            {item.title}
                         </MenuItem>
                     ))}
                 </Select>
@@ -155,6 +173,60 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         );
     }
 
+    /**
+     * Render a card for the category
+     *
+     * @param category the notification category to render card for
+     */
+    renderCategoryCard(category: NotificationCategory) {
+        const elementId = category.name['en'];
+
+        return (
+            <>
+                <Card
+                    sx={{ minWidth: 400, border: '1px solid rgba(211,211,211,0.6)' }}
+                    className={this.props.classes.card}
+                >
+                    <CardHeader
+                        title={category.name[this.props.language]}
+                        action={
+                            <IconButton
+                                onClick={() => {
+                                    this.setState({
+                                        cardOpen: {
+                                            ...this.state.cardOpen,
+                                            [elementId]: !this.state.cardOpen[elementId],
+                                        },
+                                    });
+                                }}
+                                aria-label="expand"
+                                size="small"
+                            >
+                                {this.state.cardOpen[elementId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                            </IconButton>
+                        }
+                    ></CardHeader>
+                    <div style={{ backgroundColor: 'rgba(211,211,211,0.4)' }}>
+                        <Collapse in={this.state.cardOpen[elementId]} timeout="auto" unmountOnExit>
+                            <CardContent>
+                                <Container sx={{ lineHeight: 2 }}>
+                                    {category.description[this.props.language]}
+                                    <br />
+                                    {this.renderAdapterSelect(
+                                        'firstAdapter',
+                                        'Test',
+                                        [{ value: 'test', title: 'test' }],
+                                        {},
+                                    )}
+                                </Container>
+                            </CardContent>
+                        </Collapse>
+                    </div>
+                </Card>
+            </>
+        );
+    }
+
     render() {
         if (!this.state.notificationsConfig) {
             return null;
@@ -164,9 +236,12 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
             <form className={this.props.classes.tab}>
                 {this.state.notificationsConfig.notifications.map((scope) => {
                     return (
-                        <p style={{ color: this.getTextColor() }} key={scope.scope}>
+                        <h2 style={{ color: this.getTextColor(), margin: 10 }} key={scope.scope}>
                             {scope.name[this.props.language]}
-                        </p>
+                            {scope.categories.map((category) => {
+                                return this.renderCategoryCard(category);
+                            })}
+                        </h2>
                     );
                 })}
             </form>

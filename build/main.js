@@ -55,7 +55,7 @@ class NotificationManager extends utils.Adapter {
   onUnload(callback) {
     callback();
   }
-  onStateChange(id, state) {
+  onStateChange(_id, _state) {
   }
 }
 if (require.main !== module) {
