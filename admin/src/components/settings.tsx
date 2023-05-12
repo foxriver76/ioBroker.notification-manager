@@ -32,6 +32,13 @@ const styles = (): Record<string, CreateCSSProperties> => ({
         textAlign: 'left',
         margin: 10,
     },
+    cardHeaderDark: {
+        backgroundColor: '#272727',
+        color: 'white',
+    },
+    cardHeader: {
+        backgroundColor: 'white',
+    },
     media: {
         height: 180,
     },
@@ -237,10 +244,16 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         return (
             <>
                 <Card
-                    sx={{ minWidth: 400, border: '1px solid rgba(211,211,211,0.6)' }}
+                    sx={{
+                        minWidth: 400,
+                        border: this.isDarkMode() ? '1px solid rgba(58,58,58,0.6)' : '1px solid rgba(211,211,211,0.6)',
+                    }}
                     className={this.props.classes.card}
                 >
                     <CardHeader
+                        className={
+                            this.isDarkMode() ? this.props.classes.cardHeaderDark : this.props.classes.cardHeader
+                        }
                         title={category.name[this.props.language]}
                         action={
                             <IconButton
@@ -254,15 +267,16 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                 }}
                                 aria-label="expand"
                                 size="small"
+                                style={{ color: this.isDarkMode() ? 'white' : 'black' }}
                             >
                                 {this.state.cardOpen[elementId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                             </IconButton>
                         }
                     ></CardHeader>
-                    <div style={{ backgroundColor: 'rgba(211,211,211,0.4)' }}>
+                    <div style={{ backgroundColor: this.props.theme === 'dark' ? '#3b3b3b' : 'rgba(211,211,211,0.4)' }}>
                         <Collapse in={this.state.cardOpen[elementId]} timeout="auto" unmountOnExit>
                             <CardContent>
-                                <Container sx={{ lineHeight: 2 }}>
+                                <Container sx={{ lineHeight: 2, color: this.isDarkMode() ? 'white' : 'black' }}>
                                     {category.description[this.props.language]}
                                     <br />
                                     {this.renderAdapterSelect(
@@ -295,7 +309,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         if (!this.state.notificationsConfig) {
             return (
                 <div>
-                    <h2>{I18n.t('notRunning')}</h2>
+                    <h2 style={{ color: this.isDarkMode() ? 'white' : 'black' }}>{I18n.t('notRunning')}</h2>
                 </div>
             );
         }
@@ -343,6 +357,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      */
     getTextColor(): string {
         return this.props.theme === 'dark' ? 'white' : 'black';
+    }
+
+    /**
+     * Determine if dark mode is active
+     */
+    isDarkMode(): boolean {
+        return this.props.theme === 'dark';
     }
 }
 
