@@ -55,7 +55,6 @@ const styles = (): Record<string, CreateCSSProperties> => ({
         width: 'calc(100% - 370px)',
     },
     controlElement: {
-        //background: "#d2d2d2",
         marginBottom: 5,
     },
     settingsRoot: {
@@ -247,69 +246,70 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * @param category the notification category to render card for
      */
     renderCategoryCard(scopeId: string, category: NotificationCategory): React.JSX.Element {
-        const elementId = category.name['en'];
+        const elementId = category.category;
 
         return (
-            <>
-                <Card
-                    sx={{
-                        minWidth: 400,
-                        border: this.isDarkMode() ? '1px solid rgba(58,58,58,0.6)' : '1px solid rgba(211,211,211,0.6)',
+            <Card
+                sx={{
+                    minWidth: 400,
+                    border: this.isDarkMode() ? '1px solid rgba(58,58,58,0.6)' : '1px solid rgba(211,211,211,0.6)',
+                }}
+                className={this.props.classes.card}
+            >
+                <CardHeader
+                    className={this.isDarkMode() ? this.props.classes.cardHeaderDark : this.props.classes.cardHeader}
+                    title={category.name[this.props.language]}
+                    action={
+                        <IconButton
+                            onClick={() => {
+                                this.setState({
+                                    cardOpen: {
+                                        ...this.state.cardOpen,
+                                        [elementId]: !this.state.cardOpen[elementId],
+                                    },
+                                });
+                            }}
+                            aria-label="expand"
+                            size="small"
+                            style={{ color: this.isDarkMode() ? 'white' : 'black' }}
+                        >
+                            {this.state.cardOpen[elementId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                        </IconButton>
+                    }
+                ></CardHeader>
+                <div
+                    style={{
+                        backgroundColor: this.props.theme === 'dark' ? '#3b3b3b' : 'rgba(211,211,211,0.4)',
+                        display: 'flex',
                     }}
-                    className={this.props.classes.card}
                 >
-                    <CardHeader
-                        className={
-                            this.isDarkMode() ? this.props.classes.cardHeaderDark : this.props.classes.cardHeader
-                        }
-                        title={category.name[this.props.language]}
-                        action={
-                            <IconButton
-                                onClick={() => {
-                                    this.setState({
-                                        cardOpen: {
-                                            ...this.state.cardOpen,
-                                            [elementId]: !this.state.cardOpen[elementId],
-                                        },
-                                    });
-                                }}
-                                aria-label="expand"
-                                size="small"
-                                style={{ color: this.isDarkMode() ? 'white' : 'black' }}
-                            >
-                                {this.state.cardOpen[elementId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                            </IconButton>
-                        }
-                    ></CardHeader>
-                    <div style={{ backgroundColor: this.props.theme === 'dark' ? '#3b3b3b' : 'rgba(211,211,211,0.4)' }}>
-                        <Collapse in={this.state.cardOpen[elementId]} timeout="auto" unmountOnExit>
-                            <CardContent>
-                                <Container sx={{ lineHeight: 2, color: this.isDarkMode() ? 'white' : 'black' }}>
-                                    {category.description[this.props.language]}
-                                    <br />
-                                    {this.renderAdapterSelect(
-                                        `firstAdapter`,
-                                        `${scopeId}.${category.category}.firstAdapter`,
-                                        this.state.supportedAdapterInstances.map((instance) => {
-                                            return { value: instance, title: instance };
-                                        }),
-                                        {},
-                                    )}
-                                    <br />
-                                    {this.renderAdapterSelect(
-                                        'secondAdapter',
-                                        `${scopeId}.${category.category}.secondAdapter`,
-                                        this.state.supportedAdapterInstances.map((instance) => {
-                                            return { value: instance, title: instance };
-                                        }),
-                                        {},
-                                    )}
-                                </Container>
-                            </CardContent>
-                        </Collapse>
-                    </div>
-                </Card>
-            </>
+                    <Collapse in={this.state.cardOpen[elementId]} timeout="auto" unmountOnExit>
+                        <CardContent>
+                            <Container sx={{ lineHeight: 2, color: this.isDarkMode() ? 'white' : 'black' }}>
+                                {category.description[this.props.language]}
+                                <br />
+                                {this.renderAdapterSelect(
+                                    `firstAdapter`,
+                                    `${scopeId}.${category.category}.firstAdapter`,
+                                    this.state.supportedAdapterInstances.map((instance) => {
+                                        return { value: instance, title: instance };
+                                    }),
+                                    {},
+                                )}
+                                <br />
+                                {this.renderAdapterSelect(
+                                    'secondAdapter',
+                                    `${scopeId}.${category.category}.secondAdapter`,
+                                    this.state.supportedAdapterInstances.map((instance) => {
+                                        return { value: instance, title: instance };
+                                    }),
+                                    {},
+                                )}
+                            </Container>
+                        </CardContent>
+                    </Collapse>
+                </div>
+            </Card>
         );
     }
 
