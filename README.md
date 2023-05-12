@@ -13,6 +13,11 @@
 ## notification-manager adapter for ioBroker
 Manage ioBroker notifications, e.g. by sending them as messages
 
+### Description
+This adapter allows to redirect the ioBroker internal `Notifications` to messenger adapters which support 
+the `Notification System`. If you are missing an adapter, please open a ticket on the corresponding adapter.
+
+
 ## Changelog
 <!--
     Placeholder for the next version (at the beginning of the line):

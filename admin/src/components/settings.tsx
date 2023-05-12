@@ -130,7 +130,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         this.state = { cardOpen: {}, supportedAdapterInstances: [] };
     }
 
-    renderInput(title: AdminWord, attr: string, type: string) {
+    renderInput(title: AdminWord, attr: string, type: string): React.JSX.Element {
         return (
             <TextField
                 label={I18n.t(title)}
@@ -156,7 +156,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         attr: ConfigurationCategoryAttribute,
         options: { value: string; title: string }[],
         style?: React.CSSProperties,
-    ) {
+    ): React.JSX.Element {
         const [scope, category, adapterOrder] = attr.split('.');
         options.push({ value: '', title: I18n.t('selectAdapterInstance') });
 
@@ -219,7 +219,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         return categories;
     }
 
-    renderCheckbox(title: AdminWord, attr: string, style?: React.CSSProperties) {
+    renderCheckbox(title: AdminWord, attr: string, style?: React.CSSProperties): React.JSX.Element {
         return (
             <FormControlLabel
                 key={attr}
@@ -246,7 +246,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * @param scopeId id of the scope
      * @param category the notification category to render card for
      */
-    renderCategoryCard(scopeId: string, category: NotificationCategory) {
+    renderCategoryCard(scopeId: string, category: NotificationCategory): React.JSX.Element {
         const elementId = category.name['en'];
 
         return (
@@ -343,7 +343,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     /**
      * React lifecycle hook, called when mounted
      */
-    async componentDidMount() {
+    async componentDidMount(): Promise<void> {
         const conn = new Connection({});
 
         await conn.waitForFirstConnection();

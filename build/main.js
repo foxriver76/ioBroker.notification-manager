@@ -56,11 +56,64 @@ class NotificationManager extends utils.Adapter {
   async onReady() {
     this.log.info("Starting notifications manager ...");
     await this.subscribeForeignStates("system.host.*.notifications.system");
+    await this.handleNotifications();
   }
   onUnload(callback) {
     callback();
   }
   onStateChange(_id, _state) {
+  }
+  async handleNotifications() {
+    const hosts = await this.getAllHosts();
+    for (const host of hosts) {
+      this.log.debug(`Request notifications from "${host}"`);
+      const { result: notifications } = await this.sendToHostAsync(
+        host,
+        "getNotifications",
+        {}
+      );
+      this.log.debug(`Received notifications from "${host}": ${JSON.stringify(notifications)}`);
+      await this.sendNotifications({ host, notifications });
+    }
+  }
+  async getAllHosts() {
+    const res = await this.getObjectViewAsync("system", "host", {
+      startkey: "system.host.",
+      endkey: "system.host.\u9999"
+    });
+    return res.rows.map((host) => host.id);
+  }
+  findResponsibleInstances(options) {
+    var _a, _b, _c, _d;
+    const { scopeId, categoryId } = options;
+    return {
+      firstAdapter: (_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.firstAdapter,
+      secondAdapter: (_d = (_c = this.config.categories[scopeId]) == null ? void 0 : _c[categoryId]) == null ? void 0 : _d.secondAdapter
+    };
+  }
+  async sendNotifications(options) {
+    const { notifications, host } = options;
+    for (const [scopeId, scope] of Object.entries(notifications)) {
+      for (const [categoryId, category] of Object.entries(scope.categories)) {
+        const { firstAdapter, secondAdapter } = this.findResponsibleInstances({ scopeId, categoryId });
+        for (const adapterInstance of [firstAdapter, secondAdapter]) {
+          if (!adapterInstance) {
+            return;
+          }
+          this.log.info(`Send notification "${scopeId}.${categoryId}" to "${adapterInstance}"`);
+          const res = await this.sendToAsync(adapterInstance, "sendNotification", { host, category, scope });
+          if (typeof (res == null ? void 0 : res.message) === "object" && res.message.handled) {
+            this.log.info(
+              `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
+            );
+            return;
+          }
+          this.log.error(
+            `Instance ${adapterInstance} could not handle the notification for "${scopeId}.${categoryId}"`
+          );
+        }
+      }
+    }
   }
 }
 if (require.main !== module) {

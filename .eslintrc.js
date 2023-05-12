@@ -39,7 +39,7 @@ module.exports = {
             },
         ],
         '@typescript-eslint/explicit-function-return-type': [
-            'warn',
+            'error',
             {
                 allowExpressions: true,
                 allowTypedFunctionExpressions: true,
@@ -55,9 +55,6 @@ module.exports = {
     overrides: [
         {
             files: ['*.test.ts', '*.tsx'],
-            rules: {
-                '@typescript-eslint/explicit-function-return-type': 'off',
-            },
         },
     ],
 };
