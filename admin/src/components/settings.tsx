@@ -158,7 +158,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         style?: React.CSSProperties,
     ) {
         const [scope, category, adapterOrder] = attr.split('.');
-        console.info(this.props.native);
+        options.push({ value: '', title: I18n.t('selectAdapterInstance') });
 
         return (
             <FormControl
@@ -169,7 +169,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 }}
             >
                 <Select
-                    value={this.props.native[scope]?.[category]?.[adapterOrder] || '_'}
+                    value={this.props.native.categories[scope]?.[category]?.[adapterOrder] || '_'}
                     onChange={(e) => {
                         const val = this.preprocessAdapterSelection(attr, e.target.value === '_' ? '' : e.target.value);
                         this.props.onChange('categories', val);
@@ -196,7 +196,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     preprocessAdapterSelection(attrPath: ConfigurationCategoryAttribute, value: unknown): ConfiguredCategories {
         const [scope, category, adapterOrder] = attrPath.split('.');
 
-        const categories = this.props.native.categories;
+        const categories = JSON.parse(JSON.stringify(this.props.native.categories));
 
         if (!categories[scope]) {
             categories[scope] = {};
@@ -207,6 +207,14 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         }
 
         categories[scope][category][adapterOrder] = value;
+
+        if (!categories[scope][category].firstAdapter && !categories[scope][category].secondAdapter) {
+            delete categories[scope][category];
+        }
+
+        if (!Object.keys(categories[scope]).length) {
+            delete categories[scope];
+        }
 
         return categories;
     }
@@ -346,6 +354,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 this.props.namespace,
                 'getSupportedMessengers',
             );
+
             this.setState({ notificationsConfig, supportedAdapterInstances });
         } catch (e: any) {
             console.error(`Backend communication failed: ${e.message}`);

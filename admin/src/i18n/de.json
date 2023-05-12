@@ -1,5 +1,6 @@
 {
     "notification-manager adapter settings": "Adaptereinstellungen für notification-manager",
     "firstAdapter": "Erster Adapter",
-    "secondAdapter": "Zweiter Adapter"
+    "secondAdapter": "Zweiter Adapter",
+    "selectAdapterInstance": "Instanz auswählen"
 }

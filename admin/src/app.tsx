@@ -47,11 +47,7 @@ class App extends GenericApp {
             <div className="App">
                 <Settings
                     native={this.state.native as AdapterNative}
-                    onChange={(attr, value) => {
-                        console.log(attr);
-                        console.log(value);
-                        this.updateNativeValue(attr, value);
-                    }}
+                    onChange={(attr, value) => this.updateNativeValue(attr, value)}
                     namespace={`${this.adapterName}.${this.instance}`}
                     language={this._systemConfig.language}
                     theme={this.state.themeType as 'dark' | 'light'}
