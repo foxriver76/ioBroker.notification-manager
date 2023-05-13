@@ -196,7 +196,7 @@ class NotificationManager extends utils.Adapter {
                     // TODO: if send to non responding adapter, things hangs forever
                     const res = await this.sendToAsync(adapterInstance, 'sendNotification', { host, category, scope });
 
-                    if (typeof res?.message === 'object' && res.message.handled) {
+                    if (typeof res?.message === 'object' && res.message.sent) {
                         this.log.info(
                             `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`,
                         );

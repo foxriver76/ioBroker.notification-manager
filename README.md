@@ -23,7 +23,7 @@ Please set the `common.supportedMessages.notifications` flag to `true` in your `
 Whenever a new notification should be delivered via the messaging adapter, `notification-manager` will send a message
 to the configured instance. 
 
-The messages has the following structure: 
+The messages consist of the command `sendNotification` and a message with the following structure: 
 
 ```json
 {
@@ -137,8 +137,8 @@ Where `category.instances` shows the affected adapter instances for this notific
 Additionally, the category has an i18n description and an i18n name. 
 The same properties exist for the scope of the category. Additionally, the affected host is included.
 
-After sending the notification, the `notification-manager` expects an answer with the property `{ handled: true }` 
-if the messaging adapter was able to deliver the notification, else it should respond with `{ handled: false }`.
+After sending the notification, the `notification-manager` expects an answer with the property `{ sent: true }` 
+if the messaging adapter was able to deliver the notification, else it should respond with `{ sent: false }`.
 
 ## Changelog
 <!--

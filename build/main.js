@@ -102,7 +102,7 @@ class NotificationManager extends utils.Adapter {
           }
           this.log.info(`Send notification "${scopeId}.${categoryId}" to "${adapterInstance}"`);
           const res = await this.sendToAsync(adapterInstance, "sendNotification", { host, category, scope });
-          if (typeof (res == null ? void 0 : res.message) === "object" && res.message.handled) {
+          if (typeof (res == null ? void 0 : res.message) === "object" && res.message.sent) {
             this.log.info(
               `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
             );
