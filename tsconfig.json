@@ -22,15 +22,12 @@
         // If you want to disable the stricter type checks (not recommended), uncomment the following line
         // "strict": false,
         // And enable some of those features for more fine-grained control
-        // "strictNullChecks": true,
-        // "strictPropertyInitialization": true,
-        // "strictBindCallApply": true,
-        // "noImplicitAny": true,
-        // "noUnusedLocals": true,
-        // "noUnusedParameters": true,
-        // Uncomment this if you want the old behavior of catch variables being `any`
-        // "useUnknownInCatchVariables": false,
-
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "strictBindCallApply": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "sourceMap": true,
         "inlineSourceMap": false
     },

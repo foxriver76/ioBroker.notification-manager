@@ -25,6 +25,7 @@ class NotificationManager extends utils.Adapter {
       ...options,
       name: "notification-manager"
     });
+    this.SEND_TO_TIMEOUT = 5e3;
     this.on("ready", this.onReady.bind(this));
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("unload", this.onUnload.bind(this));
@@ -54,7 +55,7 @@ class NotificationManager extends utils.Adapter {
     }
   }
   async onReady() {
-    this.log.info("Starting notifications manager ...");
+    this.log.info("Starting notification manager ...");
     await this.subscribeForeignStates("system.host.*.notifications.system");
     await this.handleNotifications();
   }
@@ -100,13 +101,33 @@ class NotificationManager extends utils.Adapter {
           if (!adapterInstance) {
             return;
           }
+          const bareScope = {
+            name: scope.name,
+            description: scope.description
+          };
           this.log.info(`Send notification "${scopeId}.${categoryId}" to "${adapterInstance}"`);
-          const res = await this.sendToAsync(adapterInstance, "sendNotification", { host, category, scope });
-          if (typeof (res == null ? void 0 : res.message) === "object" && res.message.sent) {
-            this.log.info(
-              `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
+          const localizedNotification = {
+            host,
+            scope: await this.localize(bareScope),
+            category: await this.localize(category)
+          };
+          try {
+            const res = await this.sendToAsync(
+              adapterInstance,
+              "sendNotification",
+              localizedNotification,
+              { timeout: this.SEND_TO_TIMEOUT }
             );
-            return;
+            if (typeof (res == null ? void 0 : res.message) === "object" && res.message.sent) {
+              this.log.info(
+                `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
+              );
+              return;
+            }
+          } catch (e) {
+            this.log.error(
+              `Error appeared while sending notification "${scopeId}.${categoryId}" to "${adapterInstance}": ${e.message}`
+            );
           }
           this.log.error(
             `Instance ${adapterInstance} could not handle the notification for "${scopeId}.${categoryId}"`
@@ -114,6 +135,13 @@ class NotificationManager extends utils.Adapter {
         }
       }
     }
+  }
+  async localize(scopeOrCategory) {
+    const config = await this.getForeignObjectAsync("system.config");
+    const lang = (config == null ? void 0 : config.common.language) || "en";
+    const description = scopeOrCategory.description[lang];
+    const name = scopeOrCategory.name[lang];
+    return { ...scopeOrCategory, description, name };
   }
 }
 if (require.main !== module) {

@@ -28,107 +28,32 @@ The messages consist of the command `sendNotification` and a message with the fo
 ```json
 {
   "host": "system.host.moritz-ThinkPad-P16-Gen-1",
+  "scope": {
+    "name": "System-Benachrichtigungen",
+    "description": "Diese Benachrichtigungen werden vom ioBroker-System erfasst und weisen auf Probleme hin, die überprüft und behoben werden sollten."
+  },
   "category": {
     "instances": {
       "system.adapter.backitup.0": {
         "messages": [
           {
             "message": "Restart loop detected",
-            "ts": 1683875665677
+            "ts": 1684074961226
+          }
+        ]
+      },
+      "system.adapter.notification-manager.0": {
+        "messages": [
+          {
+            "message": "Restart loop detected",
+            "ts": 1684075183094
           }
         ]
       }
     },
-    "description": {
-      "en": "An adapter instance is frequently crashing on startup and was stopped because of this. The log file needs to be checked before restarting the instance.",
-      "de": "Eine Adapterinstanz stürzt beim Start häufig ab und wurde aus diesem Grund gestoppt. Die Protokolldatei muss vor dem Neustart der Instanz überprüft werden.",
-      "ru": "Экземпляр адаптера часто дает сбой при запуске и был остановлен из-за этого. Перед перезапуском экземпляра необходимо проверить файл журнала.",
-      "pt": "Uma instância do adaptador frequentemente falha na inicialização e foi interrompida por causa disso. O arquivo de log precisa ser verificado antes de reiniciar a instância.",
-      "nl": "Een adapterinstantie crasht vaak bij het opstarten en is hierdoor gestopt. Het logboekbestand moet worden gecontroleerd voordat het exemplaar opnieuw wordt opgestart.",
-      "fr": "Une instance d'adaptateur plante fréquemment au démarrage et a été arrêtée à cause de cela. Le fichier journal doit être vérifié avant de redémarrer l'instance.",
-      "it": "Un'istanza dell'adattatore si blocca spesso all'avvio ed è stata interrotta per questo motivo. Il file di registro deve essere controllato prima di riavviare l'istanza.",
-      "es": "Una instancia de adaptador falla con frecuencia al iniciarse y se detuvo debido a esto. Es necesario comprobar el archivo de registro antes de reiniciar la instancia.",
-      "pl": "Instancja adaptera często ulega awarii podczas uruchamiania i została z tego powodu zatrzymana. Plik dziennika należy sprawdzić przed ponownym uruchomieniem instancji.",
-      "zh-cn": "适配器实例在启动时经常崩溃，因此已被停止。重新启动实例之前，需要检查日志文件。"
-    },
-    "name": {
-      "en": "Issues with frequently crashing adapter instances",
-      "de": "Probleme mit häufig abstürzenden Adapterinstanzen",
-      "ru": "Проблемы с частыми сбоями экземпляров адаптера",
-      "pt": "Problemas com falhas frequentes de instâncias do adaptador",
-      "nl": "Problemen met vaak crashende adapterinstanties",
-      "fr": "Problèmes avec les instances d'adaptateur qui plantent fréquemment",
-      "it": "Problemi con le istanze dell'adattatore che si arrestano frequentemente",
-      "es": "Problemas con instancias de adaptador que fallan con frecuencia",
-      "pl": "Problemy z często zawieszającymi się instancjami adaptera",
-      "zh-cn": "适配器实例频繁崩溃的问题"
-    },
+    "description": "Eine Adapterinstanz stürzt beim Start häufig ab und wurde aus diesem Grund gestoppt. Die Protokolldatei muss vor dem Neustart der Instanz überprüft werden.",
+    "name": "Probleme mit häufig abstürzenden Adapterinstanzen",
     "severity": "alert"
-  },
-  "scope": {
-    "categories": {
-      "restartLoop": {
-        "instances": {
-          "system.adapter.backitup.0": {
-            "messages": [
-              {
-                "message": "Restart loop detected",
-                "ts": 1683875665677
-              }
-            ]
-          }
-        },
-        "description": {
-          "en": "An adapter instance is frequently crashing on startup and was stopped because of this. The log file needs to be checked before restarting the instance.",
-          "de": "Eine Adapterinstanz stürzt beim Start häufig ab und wurde aus diesem Grund gestoppt. Die Protokolldatei muss vor dem Neustart der Instanz überprüft werden.",
-          "ru": "Экземпляр адаптера часто дает сбой при запуске и был остановлен из-за этого. Перед перезапуском экземпляра необходимо проверить файл журнала.",
-          "pt": "Uma instância do adaptador frequentemente falha na inicialização e foi interrompida por causa disso. O arquivo de log precisa ser verificado antes de reiniciar a instância.",
-          "nl": "Een adapterinstantie crasht vaak bij het opstarten en is hierdoor gestopt. Het logboekbestand moet worden gecontroleerd voordat het exemplaar opnieuw wordt opgestart.",
-          "fr": "Une instance d'adaptateur plante fréquemment au démarrage et a été arrêtée à cause de cela. Le fichier journal doit être vérifié avant de redémarrer l'instance.",
-          "it": "Un'istanza dell'adattatore si blocca spesso all'avvio ed è stata interrotta per questo motivo. Il file di registro deve essere controllato prima di riavviare l'istanza.",
-          "es": "Una instancia de adaptador falla con frecuencia al iniciarse y se detuvo debido a esto. Es necesario comprobar el archivo de registro antes de reiniciar la instancia.",
-          "pl": "Instancja adaptera często ulega awarii podczas uruchamiania i została z tego powodu zatrzymana. Plik dziennika należy sprawdzić przed ponownym uruchomieniem instancji.",
-          "zh-cn": "适配器实例在启动时经常崩溃，因此已被停止。重新启动实例之前，需要检查日志文件。"
-        },
-        "name": {
-          "en": "Issues with frequently crashing adapter instances",
-          "de": "Probleme mit häufig abstürzenden Adapterinstanzen",
-          "ru": "Проблемы с частыми сбоями экземпляров адаптера",
-          "pt": "Problemas com falhas frequentes de instâncias do adaptador",
-          "nl": "Problemen met vaak crashende adapterinstanties",
-          "fr": "Problèmes avec les instances d'adaptateur qui plantent fréquemment",
-          "it": "Problemi con le istanze dell'adattatore che si arrestano frequentemente",
-          "es": "Problemas con instancias de adaptador que fallan con frecuencia",
-          "pl": "Problemy z często zawieszającymi się instancjami adaptera",
-          "zh-cn": "适配器实例频繁崩溃的问题"
-        },
-        "severity": "alert"
-      }
-    },
-    "description": {
-      "en": "These notifications are collected by the ioBroker system and point to issues you should check and fix.",
-      "de": "Diese Benachrichtigungen werden vom ioBroker-System erfasst und weisen auf Probleme hin, die überprüft und behoben werden sollten.",
-      "ru": "Эти уведомления собираются системой ioBroker и указывают на проблемы, которые вы должны проверить и исправить.",
-      "pt": "Essas notificações são coletadas pelo sistema ioBroker e apontam para problemas que você deve verificar e corrigir.",
-      "nl": "Deze meldingen worden verzameld door het ioBroker-systeem en wijzen op problemen die u moet controleren en oplossen.",
-      "fr": "Ces notifications sont collectées par le système ioBroker et indiquent des problèmes que vous devez vérifier et résoudre.",
-      "it": "Queste notifiche vengono raccolte dal sistema ioBroker e indicano problemi che dovresti controllare e correggere.",
-      "es": "Estas notificaciones son recopiladas por el sistema ioBroker y señalan problemas que debe verificar y solucionar.",
-      "pl": "Te powiadomienia są zbierane przez system ioBroker i wskazują problemy, które należy sprawdzić i naprawić.",
-      "zh-cn": "这些通知由ioBroker系统收集，并指出您应检查并修复的问题"
-    },
-    "name": {
-      "en": "System Notifications",
-      "de": "System-Benachrichtigungen",
-      "ru": "Системные уведомления",
-      "pt": "Notificações do sistema",
-      "nl": "Systeemmeldingen",
-      "fr": "Notifications système",
-      "it": "Notifiche di sistema",
-      "es": "Notificaciones del sistema",
-      "pl": "Powiadomienia systemowe",
-      "zh-cn": "系统通知"
-    }
   }
 }
 ```
