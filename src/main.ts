@@ -240,7 +240,8 @@ class NotificationManager extends utils.Adapter {
                             { timeout: this.SEND_TO_TIMEOUT },
                         );
 
-                        if (typeof res?.message === 'object' && res.message.sent) {
+                        // @ts-expect-error types are wrong, this is a callback not a new message
+                        if (typeof res === 'object' && res.sent) {
                             this.log.info(
                                 `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`,
                             );

@@ -118,7 +118,7 @@ class NotificationManager extends utils.Adapter {
               localizedNotification,
               { timeout: this.SEND_TO_TIMEOUT }
             );
-            if (typeof (res == null ? void 0 : res.message) === "object" && res.message.sent) {
+            if (typeof res === "object" && res.sent) {
               this.log.info(
                 `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
               );
