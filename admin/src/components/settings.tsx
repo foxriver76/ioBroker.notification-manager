@@ -19,6 +19,9 @@ import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWarning } from '@fortawesome/free-solid-svg-icons/faWarning';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 
 const styles = (): Record<string, CreateCSSProperties> => ({
     input: {
@@ -91,10 +94,12 @@ interface Notifications {
     categories: NotificationCategory[];
 }
 
+type Severity = 'alert' | 'notify' | 'info';
+
 interface NotificationCategory {
     /** the category id */
     category: string;
-    severity: 'alert' | 'notify' | 'info';
+    severity: Severity;
     description: Record<string, string>;
     name: Record<string, string>;
     limit: number;
@@ -283,8 +288,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                         display: 'flex',
                     }}
                 >
-                    <Collapse in={this.state.cardOpen[elementId]} timeout="auto" unmountOnExit>
-                        <CardContent>
+                    <Collapse
+                        in={this.state.cardOpen[elementId]}
+                        timeout="auto"
+                        unmountOnExit
+                        style={{ width: '100%' }}
+                    >
+                        <CardContent style={{ display: 'flex' }}>
                             <Container sx={{ lineHeight: 2, color: this.isDarkMode() ? 'white' : 'black' }}>
                                 {category.description[this.props.language]}
                                 <br />
@@ -306,10 +316,30 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     {},
                                 )}
                             </Container>
+                            <div style={{ flex: 1, display: 'flex' }}> {this.renderIcon(category.severity)}</div>
                         </CardContent>
                     </Collapse>
                 </div>
             </Card>
+        );
+    }
+
+    /**
+     * Render icon for severity
+     *
+     * @param severity the severity of the category
+     */
+    renderIcon(severity: Severity): React.JSX.Element {
+        const icon = severity === 'alert' ? faWarning : faInfoCircle;
+        const color = severity === 'alert' ? '#ff8f00' : '#3399cc';
+
+        return (
+            <FontAwesomeIcon
+                style={{ marginLeft: 'auto', alignSelf: 'center' }}
+                icon={icon}
+                size={'3x'}
+                color={color}
+            />
         );
     }
 
