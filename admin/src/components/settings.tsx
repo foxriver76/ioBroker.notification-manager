@@ -22,6 +22,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWarning } from '@fortawesome/free-solid-svg-icons/faWarning';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
+import { faBell } from '@fortawesome/free-regular-svg-icons/faBell';
 
 const styles = (): Record<string, CreateCSSProperties> => ({
     input: {
@@ -131,6 +132,22 @@ interface SettingsState {
 }
 
 class Settings extends React.Component<SettingsProps, SettingsState> {
+    /** Map severity to icon and color */
+    private readonly SEVERITY_MAPPING = {
+        notify: {
+            icon: faBell,
+            color: '#3399cc',
+        },
+        info: {
+            icon: faInfoCircle,
+            color: '#3399cc',
+        },
+        alert: {
+            icon: faWarning,
+            color: '#ff8f00',
+        },
+    } as const;
+
     constructor(props: SettingsProps) {
         super(props);
         this.state = { cardOpen: {}, supportedAdapterInstances: [] };
@@ -333,8 +350,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * @param severity the severity of the category
      */
     renderIcon(severity: Severity): React.JSX.Element {
-        const icon = severity === 'alert' ? faWarning : faInfoCircle;
-        const color = severity === 'alert' ? '#ff8f00' : '#3399cc';
+        const { icon, color } = this.SEVERITY_MAPPING[severity];
 
         return (
             <FontAwesomeIcon
