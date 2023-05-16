@@ -38,9 +38,11 @@ const styles = (): Record<string, CreateCSSProperties> => ({
     cardHeaderDark: {
         backgroundColor: '#272727',
         color: 'white',
+        fontWeight: 'bold',
     },
     cardHeader: {
         backgroundColor: 'white',
+        fontWeight: 'bold',
     },
     media: {
         height: 180,
@@ -264,6 +266,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 <CardHeader
                     className={this.isDarkMode() ? this.props.classes.cardHeaderDark : this.props.classes.cardHeader}
                     title={category.name[this.props.language]}
+                    titleTypographyProps={{ fontWeight: 'bold', fontSize: 16 }}
                     action={
                         <IconButton
                             onClick={() => {
