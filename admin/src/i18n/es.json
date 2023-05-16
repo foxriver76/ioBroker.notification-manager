@@ -3,5 +3,7 @@
     "firstAdapter": "Primer adaptador",
     "secondAdapter": "Segundo adaptador",
     "notRunning": "Por favor, inicie el adaptador primero.",
-    "selectAdapterInstance": "Seleccionar instancia"
+    "selectAdapterInstance": "Seleccionar instancia",
+    "mainSettings": "Ajustes principales",
+    "additionalSettings": "Ajustes adicionales"
 }

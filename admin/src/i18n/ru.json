@@ -3,5 +3,7 @@
     "firstAdapter": "Первый адаптер",
     "secondAdapter": "Второй адаптер",
     "notRunning": "Сначала запустите адаптер!",
-    "selectAdapterInstance": "Выберите экземпляр"
+    "selectAdapterInstance": "Выберите экземпляр",
+    "mainSettings": "Основные настройки",
+    "additionalSettings": "Дополнительные настройки"
 }

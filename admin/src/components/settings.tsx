@@ -9,6 +9,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { Tab } from '@material-ui/core';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
 import I18n from '@iobroker/adapter-react-v5/i18n';
 import { Connection } from '@iobroker/socket-client';
 import Card from '@mui/material/Card';
@@ -127,6 +129,8 @@ interface SettingsState {
     notificationsConfig?: NotificationsConfig;
     /** id for each card and open status */
     cardOpen: Record<string, boolean>;
+    /** The currently selected tab */
+    selectedTab: string;
     /** all instances that can be used to handle notifications */
     supportedAdapterInstances: string[];
 }
@@ -150,7 +154,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 
     constructor(props: SettingsProps) {
         super(props);
-        this.state = { cardOpen: {}, supportedAdapterInstances: [] };
+        this.state = { cardOpen: {}, supportedAdapterInstances: [], selectedTab: '0' };
     }
 
     renderInput(title: AdminWord, attr: string, type: string): React.JSX.Element {
@@ -362,18 +366,15 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         );
     }
 
-    render(): React.JSX.Element {
-        if (!this.state.notificationsConfig) {
-            return (
-                <div>
-                    <h2 style={{ color: this.isDarkMode() ? 'white' : 'black' }}>{I18n.t('notRunning')}</h2>
-                </div>
-            );
-        }
-
+    /**
+     * Render the main settings
+     *
+     * @param notificationsConfig the current notifications config
+     */
+    renderMainSettings(notificationsConfig: NotificationsConfig): React.JSX.Element {
         return (
             <form className={this.props.classes.tab}>
-                {this.state.notificationsConfig.map((scope) => {
+                {notificationsConfig.map((scope) => {
                     return (
                         <div key={'settings-root'} className={this.props.classes.settingsRoot}>
                             <h2 style={{ color: this.getTextColor(), margin: 10 }} key={scope.scope}>
@@ -386,6 +387,40 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                     );
                 })}
             </form>
+        );
+    }
+
+    /**
+     * Render the additional settings
+     */
+    renderAdditionalSettings(): React.JSX.Element {
+        return <p>TODO ;-)</p>;
+    }
+
+    render(): React.JSX.Element {
+        if (!this.state.notificationsConfig) {
+            return (
+                <div>
+                    <h2 style={{ color: this.isDarkMode() ? 'white' : 'black' }}>{I18n.t('notRunning')}</h2>
+                </div>
+            );
+        }
+
+        return (
+            <div style={{ marginLeft: '10px' }}>
+                <TabContext value={this.state.selectedTab}>
+                    <TabList
+                        value={this.state.selectedTab}
+                        onChange={(_event, value) => this.setState({ selectedTab: value })}
+                    >
+                        <Tab label={I18n.t('mainSettings')} value={'0'} />
+                        <Tab label={I18n.t('additionalSettings')} value={'1'} />
+                    </TabList>
+                    <TabPanel value={'0'}>{this.renderMainSettings(this.state.notificationsConfig)}</TabPanel>
+
+                    <TabPanel value={'1'}>{this.renderAdditionalSettings()}</TabPanel>
+                </TabContext>
+            </div>
         );
     }
 

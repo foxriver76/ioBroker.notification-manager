@@ -3,5 +3,7 @@
     "firstAdapter": "Eerste adapter",
     "secondAdapter": "Tweede adapter",
     "notRunning": "Start eerst de adapter!",
-    "selectAdapterInstance": "Selecteer instantie"
+    "selectAdapterInstance": "Selecteer instantie",
+    "mainSettings": "Belangrijkste instellingen",
+    "additionalSettings": "Aanvullende instellingen"
 }
