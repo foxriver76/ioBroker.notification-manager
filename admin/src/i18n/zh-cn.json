@@ -1,5 +1,7 @@
 {
     "notification-manager adapter settings": "notification-manager的适配器设置",
-    "option1": "选项1",
-    "option2": "选项2"
+    "firstAdapter": "第一个适配器",
+    "secondAdapter": "第二个适配器",
+    "notRunning": "请先启动适配器！",
+    "selectAdapterInstance": "选择实例"
 }

@@ -44,8 +44,13 @@
             "uk": "Керуйте сповіщеннями ioBroker, напр. надсилаючи їх як повідомлення",
             "zh-cn": "管理 ioBroker 通知，例如通过将它们作为消息发送"
         },
-        "authors": ["foxriver76 <moritz.heusinger@gmail.com>"],
-        "keywords": ["notifications", "messages"],
+        "authors": [
+            "foxriver76 <moritz.heusinger@gmail.com>"
+        ],
+        "keywords": [
+            "notifications",
+            "messages"
+        ],
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "build/main.js",

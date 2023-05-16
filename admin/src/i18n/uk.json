@@ -1,5 +1,7 @@
 {
     "notification-manager adapter settings": "Налаштування адаптера для notification-manager",
-    "option1": "варіант1",
-    "option2": "варіант2"
+    "firstAdapter": "Перший адаптер",
+    "secondAdapter": "Другий адаптер",
+    "notRunning": "Спочатку запустіть адаптер!",
+    "selectAdapterInstance": "Виберіть екземпляр"
 }

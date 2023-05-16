@@ -5,6 +5,8 @@ interface GetNotificationsResponse {
     result: NotificationsObject;
 }
 
+type HostId = `system.host.${string}`;
+
 interface NotificationCategory {
     instances: {
         [adapterInstance: string]: {
@@ -131,8 +133,7 @@ class NotificationManager extends utils.Adapter {
      */
     private async onReady(): Promise<void> {
         this.log.info('Starting notification manager ...');
-        // TODO: later more generic approach if we have other notifications than system
-        await this.subscribeForeignStates('system.host.*.notifications.system');
+        await this.subscribeForeignStates('system.host.*.notifications.*');
         await this.handleNotifications();
     }
 
@@ -146,18 +147,19 @@ class NotificationManager extends utils.Adapter {
     /**
      * Is called if a subscribed state changes
      */
-    private onStateChange(_id: string, _state: ioBroker.State | null | undefined): void {
-        // TODO: the notifications object has changed, check if a new notification has been registered
-        // we need to cache the notifications object up from adapter start to check what is new
-        // or we decide to clear the notifications in every case if we handled them, so that
-        // all notifications which we should handle are new or need a new try
+    private async onStateChange(id: string, _state: ioBroker.State | null | undefined): Promise<void> {
+        const hostName = id.split('.')[2];
+        this.log.info(`New notification on "${hostName}" detected`);
+        await this.handleNotifications([`system.host.${hostName}`]);
     }
 
     /**
-     * Checks for existing notifications and handles them accordign to the configuration
+     * Checks for existing notifications and handles them according to the configuration
+     *
+     * @param hosts names of the hosts to handle notifications for, if omitted all hosts are used
      */
-    private async handleNotifications(): Promise<void> {
-        const hosts = await this.getAllHosts();
+    private async handleNotifications(hosts?: HostId[]): Promise<void> {
+        hosts = hosts || (await this.getAllHosts());
 
         for (const host of hosts) {
             this.log.debug(`Request notifications from "${host}"`);
@@ -177,13 +179,13 @@ class NotificationManager extends utils.Adapter {
     /**
      * Get all existing hosts of this installation
      */
-    private async getAllHosts(): Promise<string[]> {
+    private async getAllHosts(): Promise<HostId[]> {
         const res = await this.getObjectViewAsync('system', 'host', {
             startkey: 'system.host.',
             endkey: 'system.host.\u9999',
         });
 
-        return res.rows.map((host) => host.id);
+        return res.rows.map((host) => host.id as HostId);
     }
 
     /**
@@ -246,7 +248,10 @@ class NotificationManager extends utils.Adapter {
                                 `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`,
                             );
 
-                            // TODO: ack the notification
+                            await this.sendToHostAsync(host, 'clearNotifications', {
+                                scopeFilter: scopeId,
+                                categoryFilter: categoryId,
+                            });
                             return;
                         }
                     } catch (e: any) {

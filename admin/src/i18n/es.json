@@ -1,5 +1,7 @@
 {
     "notification-manager adapter settings": "Ajustes del adaptador para notification-manager",
-    "option1": "Opción 1",
-    "option2": "opcion 2"
+    "firstAdapter": "Primer adaptador",
+    "secondAdapter": "Segundo adaptador",
+    "notRunning": "Por favor, inicie el adaptador primero.",
+    "selectAdapterInstance": "Seleccionar instancia"
 }

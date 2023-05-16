@@ -56,16 +56,19 @@ class NotificationManager extends utils.Adapter {
   }
   async onReady() {
     this.log.info("Starting notification manager ...");
-    await this.subscribeForeignStates("system.host.*.notifications.system");
+    await this.subscribeForeignStates("system.host.*.notifications.*");
     await this.handleNotifications();
   }
   onUnload(callback) {
     callback();
   }
-  onStateChange(_id, _state) {
+  async onStateChange(id, _state) {
+    const hostName = id.split(".")[2];
+    this.log.info(`New notification on "${hostName}" detected`);
+    await this.handleNotifications([`system.host.${hostName}`]);
   }
-  async handleNotifications() {
-    const hosts = await this.getAllHosts();
+  async handleNotifications(hosts) {
+    hosts = hosts || await this.getAllHosts();
     for (const host of hosts) {
       this.log.debug(`Request notifications from "${host}"`);
       const { result: notifications } = await this.sendToHostAsync(
@@ -122,6 +125,10 @@ class NotificationManager extends utils.Adapter {
               this.log.info(
                 `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
               );
+              await this.sendToHostAsync(host, "clearNotifications", {
+                scopeFilter: scopeId,
+                categoryFilter: categoryId
+              });
               return;
             }
           } catch (e) {
