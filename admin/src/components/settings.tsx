@@ -185,7 +185,51 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * @param options title and value of every option
      * @param style additional css style
      */
-    renderAdapterSelect(
+    renderFallbackAdapterSelect(
+        title: AdminWord,
+        attr: ConfigurationCategoryAttribute,
+        options: { value: string; title: string }[],
+        style?: React.CSSProperties,
+    ): React.JSX.Element {
+        const [severity, adapterOrder] = attr.split('.').slice(1);
+        options.push({ value: '', title: I18n.t('selectAdapterInstance') });
+
+        return (
+            <FormControl
+                className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
+                style={{
+                    paddingTop: 5,
+                    ...style,
+                }}
+            >
+                <Select
+                    value={this.props.native.fallback[severity][adapterOrder] || '_'}
+                    onChange={(e) => {
+                        //const val = this.preprocessAdapterSelection(attr, e.target.value === '_' ? '' : e.target.value);
+                        this.props.onChange(attr, e.target.value === '_' ? '' : e.target.value);
+                    }}
+                    input={<Input name={attr} id={attr + '-helper'} />}
+                >
+                    {options.map((item) => (
+                        <MenuItem key={'key-' + item.value} value={item.value || '_'}>
+                            {item.title}
+                        </MenuItem>
+                    ))}
+                </Select>
+                <FormHelperText>{I18n.t(title)}</FormHelperText>
+            </FormControl>
+        );
+    }
+
+    /**
+     * Renders the adapter selection checkbox
+     *
+     * @param title the title from i18n
+     * @param attr the attribute path of native
+     * @param options title and value of every option
+     * @param style additional css style
+     */
+    renderCategoryAdapterSelect(
         title: AdminWord,
         attr: ConfigurationCategoryAttribute,
         options: { value: string; title: string }[],
@@ -329,7 +373,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                             <Container sx={{ lineHeight: 2, color: this.isDarkMode() ? 'white' : 'black' }}>
                                 {category.description[this.props.language]}
                                 <br />
-                                {this.renderAdapterSelect(
+                                {this.renderCategoryAdapterSelect(
                                     `firstAdapter`,
                                     `${scopeId}.${category.category}.firstAdapter`,
                                     this.state.supportedAdapterInstances.map((instance) => {
@@ -338,7 +382,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     {},
                                 )}
                                 <br />
-                                {this.renderAdapterSelect(
+                                {this.renderCategoryAdapterSelect(
                                     'secondAdapter',
                                     `${scopeId}.${category.category}.secondAdapter`,
                                     this.state.supportedAdapterInstances.map((instance) => {
@@ -425,7 +469,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     )}: ${severity}`}</h3>
 
                                     <br />
-                                    {this.renderAdapterSelect(
+                                    {this.renderFallbackAdapterSelect(
                                         `firstAdapter`,
                                         `fallback.${severity}.firstAdapter`,
                                         this.state.supportedAdapterInstances.map((instance) => {
@@ -434,7 +478,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                         {},
                                     )}
                                     <br />
-                                    {this.renderAdapterSelect(
+                                    {this.renderFallbackAdapterSelect(
                                         'secondAdapter',
                                         `fallback.${severity}.secondAdapter`,
                                         this.state.supportedAdapterInstances.map((instance) => {
