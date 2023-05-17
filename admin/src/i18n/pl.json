@@ -5,5 +5,6 @@
     "notRunning": "Najpierw uruchom adapter!",
     "selectAdapterInstance": "Wybierz instancję",
     "mainSettings": "Ustawienia główne",
-    "additionalSettings": "Dodatkowe ustawienia"
+    "additionalSettings": "Dodatkowe ustawienia",
+    "fallbackSettings": "Ustawienia zastępcze"
 }

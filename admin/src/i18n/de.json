@@ -5,5 +5,7 @@
     "selectAdapterInstance": "Instanz auswählen",
     "notRunning": "Bitte starten Sie zuerst den Adapter!",
     "mainSettings": "Haupteinstellungen",
-    "additionalSettings": "Erweiterte Einstellungen"
+    "additionalSettings": "Erweiterte Einstellungen",
+    "fallbackSettings": "Fallback-Einstellungen",
+    "severity": "Schweregrad"
 }

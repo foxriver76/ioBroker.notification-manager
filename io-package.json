@@ -81,7 +81,21 @@
         ]
     },
     "native": {
-        "categories": {}
+        "categories": {},
+        "fallback": {
+            "info": {
+                "firstAdapter": "",
+                "secondAdapter": ""
+            },
+            "notify": {
+                "firstAdapter": "",
+                "secondAdapter": ""
+            },
+            "alert": {
+                "firstAdapter": "",
+                "secondAdapter": ""
+            }
+        }
     },
     "objects": [],
     "instanceObjects": []

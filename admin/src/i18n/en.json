@@ -5,5 +5,7 @@
     "notRunning": "Please start the adapter first!",
     "selectAdapterInstance": "Select instance",
     "mainSettings": "Main settings",
-    "additionalSettings": "Additional settings"
+    "additionalSettings": "Additional settings",
+    "fallbackSettings": "Fallback settings",
+    "severity": "Severity"
 }

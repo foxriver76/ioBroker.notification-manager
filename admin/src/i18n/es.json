@@ -5,5 +5,6 @@
     "notRunning": "Por favor, inicie el adaptador primero.",
     "selectAdapterInstance": "Seleccionar instancia",
     "mainSettings": "Ajustes principales",
-    "additionalSettings": "Ajustes adicionales"
+    "additionalSettings": "Ajustes adicionales",
+    "fallbackSettings": "Configuración alternativa"
 }

@@ -5,5 +5,6 @@
     "notRunning": "Start eerst de adapter!",
     "selectAdapterInstance": "Selecteer instantie",
     "mainSettings": "Belangrijkste instellingen",
-    "additionalSettings": "Aanvullende instellingen"
+    "additionalSettings": "Aanvullende instellingen",
+    "fallbackSettings": "Fallback-instellingen"
 }

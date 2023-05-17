@@ -71,14 +71,16 @@ const styles = (): Record<string, CreateCSSProperties> => ({
     },
 });
 
+interface ConfiguredAdapters {
+    /** Try to first let this adapter handle the notification */
+    firstAdapter: string;
+    /** If first adapter fails, try this one */
+    secondAdapter: string;
+}
+
 interface ConfiguredCategories {
     [scope: string]: {
-        [category: string]: {
-            /** Try to first let this adapter handle the notification */
-            firstAdapter: string;
-            /** If first adapter fails, try this one */
-            secondAdapter: string;
-        };
+        [category: string]: ConfiguredAdapters;
     };
 }
 
@@ -87,8 +89,13 @@ type ConfigurationCategoryAttribute = `${string}.${string}.${string}`;
 
 type NotificationsConfig = Notifications[];
 
+type FallbackConfiguration = {
+    [key in Severity]: ConfiguredAdapters;
+};
+
 export interface AdapterNative {
     categories: ConfiguredCategories;
+    fallback: FallbackConfiguration;
 }
 
 interface Notifications {
@@ -394,14 +401,62 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * Render the additional settings
      */
     renderAdditionalSettings(): React.JSX.Element {
-        return <p>TODO ;-)</p>;
+        const severities: Severity[] = ['info', 'notify', 'alert'];
+
+        return (
+            <div>
+                <h2 style={{ color: this.getTextColor() }}>{I18n.t('fallbackSettings')}</h2>
+
+                {severities.map((severity) => {
+                    return (
+                        <div
+                            key={`additional-settings-${severity}`}
+                            style={{
+                                border: `1px solid ${this.getTextColor()}`,
+                                borderRadius: '5px',
+                                marginBottom: '30px',
+                                padding: '10px',
+                            }}
+                        >
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ flex: 1 }}>
+                                    <h3 style={{ color: this.getTextColor() }}>{`${I18n.t(
+                                        'severity',
+                                    )}: ${severity}`}</h3>
+
+                                    <br />
+                                    {this.renderAdapterSelect(
+                                        `firstAdapter`,
+                                        `fallback.${severity}.firstAdapter`,
+                                        this.state.supportedAdapterInstances.map((instance) => {
+                                            return { value: instance, title: instance };
+                                        }),
+                                        {},
+                                    )}
+                                    <br />
+                                    {this.renderAdapterSelect(
+                                        'secondAdapter',
+                                        `fallback.${severity}.secondAdapter`,
+                                        this.state.supportedAdapterInstances.map((instance) => {
+                                            return { value: instance, title: instance };
+                                        }),
+                                        {},
+                                    )}
+                                </div>
+                                <div style={{ alignSelf: 'center' }}>{this.renderIcon(severity)}</div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
     }
 
     render(): React.JSX.Element {
         if (!this.state.notificationsConfig) {
             return (
                 <div>
-                    <h2 style={{ color: this.isDarkMode() ? 'white' : 'black' }}>{I18n.t('notRunning')}</h2>
+                    <h2 style={{ color: this.getTextColor() }}>{I18n.t('notRunning')}</h2>
                 </div>
             );
         }
@@ -449,7 +504,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * Get text color according to theme
      */
     getTextColor(): string {
-        return this.props.theme === 'dark' ? 'white' : 'black';
+        return this.isDarkMode() ? 'white' : 'black';
     }
 
     /**
