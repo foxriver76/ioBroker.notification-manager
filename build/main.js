@@ -89,18 +89,29 @@ class NotificationManager extends utils.Adapter {
   }
   findResponsibleInstances(options) {
     var _a, _b, _c, _d;
-    const { scopeId, categoryId } = options;
+    const { scopeId, categoryId, severity } = options;
     return {
-      firstAdapter: (_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.firstAdapter,
-      secondAdapter: (_d = (_c = this.config.categories[scopeId]) == null ? void 0 : _c[categoryId]) == null ? void 0 : _d.secondAdapter
+      firstAdapter: {
+        main: (_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.firstAdapter,
+        fallback: this.config.fallback[severity].firstAdapter
+      },
+      secondAdapter: {
+        main: (_d = (_c = this.config.categories[scopeId]) == null ? void 0 : _c[categoryId]) == null ? void 0 : _d.secondAdapter,
+        fallback: this.config.fallback[severity].secondAdapter
+      }
     };
   }
   async sendNotifications(options) {
     const { notifications, host } = options;
     for (const [scopeId, scope] of Object.entries(notifications)) {
       for (const [categoryId, category] of Object.entries(scope.categories)) {
-        const { firstAdapter, secondAdapter } = this.findResponsibleInstances({ scopeId, categoryId });
-        for (const adapterInstance of [firstAdapter, secondAdapter]) {
+        const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
+          scopeId,
+          categoryId,
+          severity: category.severity
+        });
+        for (const configuredAdapter of [firstAdapter, secondAdapter]) {
+          const adapterInstance = configuredAdapter.main || configuredAdapter.fallback;
           if (!adapterInstance) {
             return;
           }

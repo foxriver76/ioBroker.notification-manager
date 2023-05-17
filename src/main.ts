@@ -7,6 +7,8 @@ interface GetNotificationsResponse {
 
 type HostId = `system.host.${string}`;
 
+type Severity = 'alert' | 'info' | 'notify';
+
 interface NotificationCategory {
     instances: {
         [adapterInstance: string]: {
@@ -17,7 +19,7 @@ interface NotificationCategory {
     description: Record<string, string>;
     /** i18n name of category */
     name: Record<string, string>;
-    severity: 'alert' | 'info' | 'notify';
+    severity: Severity;
 }
 
 /** Notifications category where i18n objects are already translated */
@@ -63,13 +65,23 @@ interface FindInstanceOptions {
     scopeId: string;
     /** id of the category */
     categoryId: string;
+    /** Severity of this category */
+    severity: Severity;
 }
 
 interface ResponsibleInstances {
-    /** highest priority adapter instance */
-    firstAdapter?: string;
-    /** second priority adapter instance */
-    secondAdapter?: string;
+    firstAdapter: {
+        /** highest priority adapter instance */
+        main?: string;
+        /** second priority adapter instance */
+        fallback: string;
+    };
+    secondAdapter: {
+        /** Fallback instance for the first instance */
+        main?: string;
+        /** Fallback instance for the second instance */
+        fallback: string;
+    };
 }
 
 interface LocalizedNotification {
@@ -194,11 +206,17 @@ class NotificationManager extends utils.Adapter {
      * @param options scope and category for the instances
      */
     private findResponsibleInstances(options: FindInstanceOptions): ResponsibleInstances {
-        const { scopeId, categoryId } = options;
+        const { scopeId, categoryId, severity } = options;
 
         return {
-            firstAdapter: this.config.categories[scopeId]?.[categoryId]?.firstAdapter,
-            secondAdapter: this.config.categories[scopeId]?.[categoryId]?.secondAdapter,
+            firstAdapter: {
+                main: this.config.categories[scopeId]?.[categoryId]?.firstAdapter,
+                fallback: this.config.fallback[severity].firstAdapter,
+            },
+            secondAdapter: {
+                main: this.config.categories[scopeId]?.[categoryId]?.secondAdapter,
+                fallback: this.config.fallback[severity].secondAdapter,
+            },
         };
     }
 
@@ -212,9 +230,14 @@ class NotificationManager extends utils.Adapter {
 
         for (const [scopeId, scope] of Object.entries(notifications)) {
             for (const [categoryId, category] of Object.entries(scope.categories)) {
-                const { firstAdapter, secondAdapter } = this.findResponsibleInstances({ scopeId, categoryId });
+                const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
+                    scopeId,
+                    categoryId,
+                    severity: category.severity,
+                });
 
-                for (const adapterInstance of [firstAdapter, secondAdapter]) {
+                for (const configuredAdapter of [firstAdapter, secondAdapter]) {
+                    const adapterInstance = configuredAdapter.main || configuredAdapter.fallback;
                     if (!adapterInstance) {
                         // if first not configured but second, do nothing
                         return;
