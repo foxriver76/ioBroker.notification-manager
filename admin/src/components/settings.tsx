@@ -468,10 +468,10 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                             {this.state.cardOpen[elementId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                         </IconButton>
                     }
-                ></CardHeader>
+                />
                 <div
                     style={{
-                        backgroundColor: this.props.theme === 'dark' ? '#3b3b3b' : 'rgba(211,211,211,0.4)',
+                        backgroundColor: this.isDarkMode() ? '#3b3b3b' : 'rgba(211,211,211,0.4)',
                         display: 'flex',
                     }}
                 >
@@ -554,43 +554,63 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 
                 {severities.map((severity) => {
                     return (
-                        <div
-                            key={`additional-settings-${severity}`}
-                            style={{
-                                border: `1px solid ${this.getTextColor()}`,
-                                borderRadius: '5px',
-                                marginBottom: '30px',
-                                padding: '10px',
+                        <Card
+                            key={`${severity}-fallback-card`}
+                            sx={{
+                                minWidth: 400,
+                                border: this.isDarkMode()
+                                    ? '1px solid rgba(58,58,58,0.6)'
+                                    : '1px solid rgba(211,211,211,0.6)',
                             }}
+                            className={this.props.classes.card}
                         >
-                            <div style={{ display: 'flex' }}>
-                                <div style={{ flex: 1 }}>
-                                    <h3 style={{ color: this.getTextColor() }}>{`${I18n.t(
-                                        'severity',
-                                    )}: ${severity}`}</h3>
-
-                                    <br />
-                                    {this.renderFallbackAdapterSelect(
-                                        `firstAdapter`,
-                                        `fallback.${severity}.firstAdapter`,
-                                        this.state.supportedAdapterInstances.map((instance) => {
-                                            return { value: instance, title: instance };
-                                        }),
-                                        {},
-                                    )}
-                                    <br />
-                                    {this.renderFallbackAdapterSelect(
-                                        'secondAdapter',
-                                        `fallback.${severity}.secondAdapter`,
-                                        this.state.supportedAdapterInstances.map((instance) => {
-                                            return { value: instance, title: instance };
-                                        }),
-                                        {},
-                                    )}
-                                </div>
-                                <div style={{ alignSelf: 'center' }}>{this.renderIcon(severity)}</div>
-                            </div>
-                        </div>
+                            <CardHeader
+                                className={
+                                    this.isDarkMode()
+                                        ? this.props.classes.cardHeaderDark
+                                        : this.props.classes.cardHeader
+                                }
+                                title={`${I18n.t('severity')}: ${severity}`}
+                                titleTypographyProps={{ fontWeight: 'bold', fontSize: 16 }}
+                            />
+                            <CardContent
+                                style={{
+                                    backgroundColor: this.isDarkMode() ? '#3b3b3b' : 'rgba(211,211,211,0.4)',
+                                    display: 'flex',
+                                }}
+                            >
+                                <Container
+                                    sx={{
+                                        lineHeight: 2,
+                                        color: this.getTextColor(),
+                                    }}
+                                >
+                                    <div style={{ display: 'flex' }}>
+                                        <div style={{ flex: 1 }}>
+                                            <br />
+                                            {this.renderFallbackAdapterSelect(
+                                                `firstAdapter`,
+                                                `fallback.${severity}.firstAdapter`,
+                                                this.state.supportedAdapterInstances.map((instance) => {
+                                                    return { value: instance, title: instance };
+                                                }),
+                                                {},
+                                            )}
+                                            <br />
+                                            {this.renderFallbackAdapterSelect(
+                                                'secondAdapter',
+                                                `fallback.${severity}.secondAdapter`,
+                                                this.state.supportedAdapterInstances.map((instance) => {
+                                                    return { value: instance, title: instance };
+                                                }),
+                                                {},
+                                            )}
+                                        </div>
+                                    </div>
+                                </Container>
+                                <div style={{ flex: 1, display: 'flex' }}>{this.renderIcon(severity)}</div>
+                            </CardContent>
+                        </Card>
                     );
                 })}
             </div>
