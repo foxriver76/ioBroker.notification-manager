@@ -8,13 +8,18 @@ interface ConfiguredAdapters {
     secondAdapter: string;
 }
 
+interface CategoryConfiguration extends ConfiguredAdapters {
+    /** If category is active */
+    active: boolean;
+}
+
 type FallbackConfiguration = {
     [key in Severity]: ConfiguredAdapters;
 };
 
 interface ConfiguredCategories {
     [scope: string]: {
-        [category: string]: ConfiguredAdapters;
+        [category: string]: CategoryConfiguration;
     };
 }
 

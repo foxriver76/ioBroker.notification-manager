@@ -7,5 +7,6 @@
     "mainSettings": "Main settings",
     "additionalSettings": "Additional settings",
     "fallbackSettings": "Fallback settings",
-    "severity": "Severity"
+    "severity": "Severity",
+    "categoryActive": "Category active"
 }

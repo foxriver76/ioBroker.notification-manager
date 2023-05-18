@@ -105,6 +105,11 @@ class NotificationManager extends utils.Adapter {
     const { notifications, host } = options;
     for (const [scopeId, scope] of Object.entries(notifications)) {
       for (const [categoryId, category] of Object.entries(scope.categories)) {
+        const isActive = this.isCategoryActive({ scopeId, categoryId });
+        if (!isActive) {
+          this.log.debug(`Skip notification "${scopeId}.${categoryId}" because user opted-out`);
+          continue;
+        }
         const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
           scopeId,
           categoryId,
@@ -153,6 +158,11 @@ class NotificationManager extends utils.Adapter {
         }
       }
     }
+  }
+  isCategoryActive(options) {
+    var _a, _b;
+    const { scopeId, categoryId } = options;
+    return ((_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.active) !== false;
   }
   async localize(scopeOrCategory) {
     const config = await this.getForeignObjectAsync("system.config");

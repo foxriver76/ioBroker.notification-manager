@@ -6,5 +6,7 @@
     "selectAdapterInstance": "Выберите экземпляр",
     "mainSettings": "Основные настройки",
     "additionalSettings": "Дополнительные настройки",
-    "fallbackSettings": "Резервные настройки"
+    "fallbackSettings": "Резервные настройки",
+    "severity": "Строгость",
+    "categoryActive": "Категория активна"
 }

@@ -6,5 +6,7 @@
     "selectAdapterInstance": "Selecionar instância",
     "mainSettings": "Configurações principais",
     "additionalSettings": "Configurações adicionais",
-    "fallbackSettings": "Configurações de fallback"
+    "fallbackSettings": "Configurações de fallback",
+    "severity": "Gravidade",
+    "categoryActive": "Categoria ativa"
 }

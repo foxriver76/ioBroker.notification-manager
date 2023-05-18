@@ -6,5 +6,7 @@
     "selectAdapterInstance": "Виберіть екземпляр",
     "mainSettings": "Основні налаштування",
     "additionalSettings": "Додаткові налаштування",
-    "fallbackSettings": "Резервні налаштування"
+    "fallbackSettings": "Резервні налаштування",
+    "severity": "Суворість",
+    "categoryActive": "Категорія активна"
 }

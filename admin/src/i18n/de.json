@@ -7,5 +7,6 @@
     "mainSettings": "Haupteinstellungen",
     "additionalSettings": "Erweiterte Einstellungen",
     "fallbackSettings": "Fallback-Einstellungen",
-    "severity": "Schweregrad"
+    "severity": "Schweregrad",
+    "categoryActive": "Kategorie aktiv"
 }

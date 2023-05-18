@@ -6,5 +6,7 @@
     "selectAdapterInstance": "选择实例",
     "mainSettings": "主要设置",
     "additionalSettings": "其他设置",
-    "fallbackSettings": "回退设置"
+    "fallbackSettings": "回退设置",
+    "severity": "严重程度",
+    "categoryActive": "活动类别"
 }

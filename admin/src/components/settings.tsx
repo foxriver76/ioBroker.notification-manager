@@ -68,6 +68,7 @@ const styles = (): Record<string, CreateCSSProperties> => ({
     settingsRoot: {
         height: '100%',
         overflow: 'scroll',
+        marginLeft: '10px',
     },
 });
 
@@ -78,9 +79,14 @@ interface ConfiguredAdapters {
     secondAdapter: string;
 }
 
+interface CategoryConfiguration extends ConfiguredAdapters {
+    /** If category is active */
+    active: boolean;
+}
+
 interface ConfiguredCategories {
     [scope: string]: {
-        [category: string]: ConfiguredAdapters;
+        [category: string]: CategoryConfiguration;
     };
 }
 
@@ -96,6 +102,22 @@ type FallbackConfiguration = {
 export interface AdapterNative {
     categories: ConfiguredCategories;
     fallback: FallbackConfiguration;
+}
+
+interface ActiveAdapterOptions {
+    /** the scope id */
+    scope: string;
+    /** the category id */
+    category: string;
+    /** if the adapter is active */
+    active: boolean;
+}
+
+interface ScopeWithCategory {
+    /** the scope id */
+    scope: string;
+    /** the category id */
+    category: string;
 }
 
 interface Notifications {
@@ -178,7 +200,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     }
 
     /**
-     * Renders the adapter selection checkbox
+     * Renders the adapter selection
      *
      * @param title the title from i18n
      * @param attr the attribute path of native
@@ -205,7 +227,6 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 <Select
                     value={this.props.native.fallback[severity][adapterOrder] || '_'}
                     onChange={(e) => {
-                        //const val = this.preprocessAdapterSelection(attr, e.target.value === '_' ? '' : e.target.value);
                         this.props.onChange(attr, e.target.value === '_' ? '' : e.target.value);
                     }}
                     input={<Input name={attr} id={attr + '-helper'} />}
@@ -222,7 +243,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     }
 
     /**
-     * Renders the adapter selection checkbox
+     * Renders the adapter selection
      *
      * @param title the title from i18n
      * @param attr the attribute path of native
@@ -266,6 +287,38 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     }
 
     /**
+     * Preprocess the category object if checkbox is checked
+     * @param options the scope, category and activation options of the active adapter
+     */
+    preprocessAdapterActive(options: ActiveAdapterOptions): ConfiguredCategories {
+        const { scope, category, active } = options;
+
+        const categories: ConfiguredCategories = JSON.parse(JSON.stringify(this.props.native.categories));
+
+        if (!categories[scope]) {
+            categories[scope] = {};
+        }
+
+        if (!categories[scope][category]) {
+            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true };
+        }
+
+        if (!active) {
+            categories[scope][category].active = false;
+        } else {
+            if (!categories[scope][category].firstAdapter && !categories[scope][category].secondAdapter) {
+                delete categories[scope][category];
+            } else {
+                categories[scope][category].active = true;
+            }
+        }
+
+        console.log(categories);
+
+        return categories;
+    }
+
+    /**
      * Preprocess single selection to extend the global native object
      *
      * @param attrPath path to the attribute like "scope.category.firstAdapter"
@@ -274,14 +327,14 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     preprocessAdapterSelection(attrPath: ConfigurationCategoryAttribute, value: unknown): ConfiguredCategories {
         const [scope, category, adapterOrder] = attrPath.split('.');
 
-        const categories = JSON.parse(JSON.stringify(this.props.native.categories));
+        const categories: ConfiguredCategories = JSON.parse(JSON.stringify(this.props.native.categories));
 
         if (!categories[scope]) {
             categories[scope] = {};
         }
 
         if (!categories[scope][category]) {
-            categories[scope][category] = { firstAdapter: '', secondAdapter: '' };
+            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true };
         }
 
         categories[scope][category][adapterOrder] = value;
@@ -297,7 +350,16 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         return categories;
     }
 
-    renderCheckbox(title: AdminWord, attr: string, style?: React.CSSProperties): React.JSX.Element {
+    /**
+     * Render a checkbox
+     *
+     * @param title the i18n title
+     * @param attr attribute path
+     * @param style additional style
+     */
+    renderAdapterActiveCheckbox(title: AdminWord, attr: string, style?: React.CSSProperties): React.JSX.Element {
+        const [scope, category] = attr.split('.');
+
         return (
             <FormControlLabel
                 key={attr}
@@ -308,13 +370,63 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 className={this.props.classes.controlElement}
                 control={
                     <Checkbox
-                        checked={this.props.native[attr]}
-                        onChange={() => this.props.onChange(attr, !this.props.native[attr])}
+                        checked={this.props.native.categories[scope]?.[category]?.active !== false}
+                        onChange={(_event, checked) =>
+                            this.props.onChange(
+                                'categories',
+                                this.preprocessAdapterActive({ scope, category, active: checked }),
+                            )
+                        }
                         color="primary"
                     />
                 }
                 label={I18n.t(title)}
             />
+        );
+    }
+
+    /**
+     * Check if given category is active
+     *
+     * @param options scope and category config
+     */
+    private isCategoryActive(options: ScopeWithCategory): boolean {
+        const { scope, category } = options;
+
+        return this.props.native.categories[scope]?.[category]?.active !== false;
+    }
+
+    /**
+     * Render all adapter selections for given category
+     * @param options
+     */
+    private renderCategoryAdapterSelects(options: ScopeWithCategory): React.JSX.Element | null {
+        const { scope, category } = options;
+
+        if (!this.isCategoryActive({ scope, category })) {
+            return null;
+        }
+
+        return (
+            <div>
+                {this.renderCategoryAdapterSelect(
+                    `firstAdapter`,
+                    `${scope}.${category}.firstAdapter`,
+                    this.state.supportedAdapterInstances.map((instance) => {
+                        return { value: instance, title: instance };
+                    }),
+                    {},
+                )}
+                <br />
+                {this.renderCategoryAdapterSelect(
+                    'secondAdapter',
+                    `${scope}.${category}.secondAdapter`,
+                    this.state.supportedAdapterInstances.map((instance) => {
+                        return { value: instance, title: instance };
+                    }),
+                    {},
+                )}
+            </div>
         );
     }
 
@@ -373,23 +485,12 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                             <Container sx={{ lineHeight: 2, color: this.isDarkMode() ? 'white' : 'black' }}>
                                 {category.description[this.props.language]}
                                 <br />
-                                {this.renderCategoryAdapterSelect(
-                                    `firstAdapter`,
-                                    `${scopeId}.${category.category}.firstAdapter`,
-                                    this.state.supportedAdapterInstances.map((instance) => {
-                                        return { value: instance, title: instance };
-                                    }),
-                                    {},
+                                {this.renderAdapterActiveCheckbox(
+                                    'categoryActive',
+                                    `${scopeId}.${category.category}.active`,
                                 )}
                                 <br />
-                                {this.renderCategoryAdapterSelect(
-                                    'secondAdapter',
-                                    `${scopeId}.${category.category}.secondAdapter`,
-                                    this.state.supportedAdapterInstances.map((instance) => {
-                                        return { value: instance, title: instance };
-                                    }),
-                                    {},
-                                )}
+                                {this.renderCategoryAdapterSelects({ scope: scopeId, category: category.category })}
                             </Container>
                             <div style={{ flex: 1, display: 'flex' }}> {this.renderIcon(category.severity)}</div>
                         </CardContent>
@@ -427,7 +528,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
             <form className={this.props.classes.tab}>
                 {notificationsConfig.map((scope) => {
                     return (
-                        <div key={'settings-root'} className={this.props.classes.settingsRoot}>
+                        <div key={'settings-root'}>
                             <h2 style={{ color: this.getTextColor(), margin: 10 }} key={scope.scope}>
                                 {scope.name[this.props.language]}
                             </h2>
@@ -506,7 +607,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         }
 
         return (
-            <div style={{ marginLeft: '10px' }}>
+            <div style={{}} className={this.props.classes.settingsRoot}>
                 <TabContext value={this.state.selectedTab}>
                     <TabList
                         value={this.state.selectedTab}

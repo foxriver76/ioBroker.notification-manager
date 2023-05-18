@@ -6,5 +6,7 @@
     "selectAdapterInstance": "Selecteer instantie",
     "mainSettings": "Belangrijkste instellingen",
     "additionalSettings": "Aanvullende instellingen",
-    "fallbackSettings": "Fallback-instellingen"
+    "fallbackSettings": "Fallback-instellingen",
+    "severity": "Ernst",
+    "categoryActive": "Categorie actief"
 }

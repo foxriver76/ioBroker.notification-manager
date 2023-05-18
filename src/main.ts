@@ -69,6 +69,13 @@ interface FindInstanceOptions {
     severity: Severity;
 }
 
+interface CategoryActiveCheckOptions {
+    /** id of the scope */
+    scopeId: string;
+    /** id of the category */
+    categoryId: string;
+}
+
 interface ResponsibleInstances {
     firstAdapter: {
         /** highest priority adapter instance */
@@ -230,6 +237,13 @@ class NotificationManager extends utils.Adapter {
 
         for (const [scopeId, scope] of Object.entries(notifications)) {
             for (const [categoryId, category] of Object.entries(scope.categories)) {
+                const isActive = this.isCategoryActive({ scopeId, categoryId });
+
+                if (!isActive) {
+                    this.log.debug(`Skip notification "${scopeId}.${categoryId}" because user opted-out`);
+                    continue;
+                }
+
                 const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
                     scopeId,
                     categoryId,
@@ -289,6 +303,16 @@ class NotificationManager extends utils.Adapter {
                 }
             }
         }
+    }
+
+    /**
+     * Check if the category is active or opted out by the user
+     *
+     * @param options scope and category information
+     */
+    private isCategoryActive(options: CategoryActiveCheckOptions): boolean {
+        const { scopeId, categoryId } = options;
+        return this.config.categories[scopeId]?.[categoryId]?.active !== false;
     }
 
     /**
