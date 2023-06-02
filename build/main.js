@@ -47,8 +47,8 @@ class NotificationManager extends utils.Adapter {
         endkey: "system.adapter.\u9999"
       });
       const instances = res.rows.filter((row) => {
-        var _a;
-        return ((_a = row.value) == null ? void 0 : _a.common.type) === "messaging";
+        var _a, _b;
+        return (_b = (_a = row.value) == null ? void 0 : _a.common.supportedMessages) == null ? void 0 : _b.notifications;
       }).map((obj2) => obj2.id.substring("system.adapter.".length));
       this.sendTo(obj.from, obj.command, { instances }, obj.callback);
       return;

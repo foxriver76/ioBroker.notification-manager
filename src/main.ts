@@ -139,7 +139,7 @@ class NotificationManager extends utils.Adapter {
 
             const instances = res.rows
                 // @ts-expect-error types are wrong
-                .filter((row) => row.value?.common.type === 'messaging')
+                .filter((row) => row.value?.common.supportedMessages?.notifications)
                 .map((obj) => obj.id.substring('system.adapter.'.length));
 
             this.sendTo(obj.from, obj.command, { instances }, obj.callback);
