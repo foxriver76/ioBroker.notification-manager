@@ -8,5 +8,6 @@
     "additionalSettings": "Дополнительные настройки",
     "fallbackSettings": "Резервные настройки",
     "severity": "Строгость",
-    "categoryActive": "Категория активна"
+    "categoryActive": "Категория активна",
+    "testMessage": "Отправить тестовое сообщение"
 }

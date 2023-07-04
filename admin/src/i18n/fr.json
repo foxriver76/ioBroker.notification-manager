@@ -8,5 +8,6 @@
     "additionalSettings": "Paramètres additionnels",
     "fallbackSettings": "Paramètres de secours",
     "severity": "Gravité",
-    "categoryActive": "Catégorie active"
+    "categoryActive": "Catégorie active",
+    "testMessage": "Envoyer un message test"
 }

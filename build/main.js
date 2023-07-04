@@ -53,6 +53,16 @@ class NotificationManager extends utils.Adapter {
       this.sendTo(obj.from, obj.command, { instances }, obj.callback);
       return;
     }
+    if (obj.command === "sendTestMessage") {
+      if (typeof obj.message !== "object") {
+        return;
+      }
+      const { scopeId, category } = obj.message;
+      this.log.info(`Send test message for scope "${scopeId}" and category "${category}"`);
+      await this.registerNotification(scopeId, category, "Test notification from notification-manager");
+      this.sendTo(obj.from, obj.command, { ack: true }, obj.callback);
+      return;
+    }
   }
   async onReady() {
     this.log.info("Starting notification manager ...");

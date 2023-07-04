@@ -8,5 +8,6 @@
     "additionalSettings": "Additional settings",
     "fallbackSettings": "Fallback settings",
     "severity": "Severity",
-    "categoryActive": "Category active"
+    "categoryActive": "Category active",
+    "testMessage": "Send test message"
 }

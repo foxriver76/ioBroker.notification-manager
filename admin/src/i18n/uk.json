@@ -8,5 +8,6 @@
     "additionalSettings": "Додаткові налаштування",
     "fallbackSettings": "Резервні налаштування",
     "severity": "Суворість",
-    "categoryActive": "Категорія активна"
+    "categoryActive": "Категорія активна",
+    "testMessage": "Надіслати тестове повідомлення"
 }

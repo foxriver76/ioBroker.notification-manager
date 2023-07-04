@@ -8,5 +8,6 @@
     "additionalSettings": "Configurações adicionais",
     "fallbackSettings": "Configurações de fallback",
     "severity": "Gravidade",
-    "categoryActive": "Categoria ativa"
+    "categoryActive": "Categoria ativa",
+    "testMessage": "Enviar mensagem de teste"
 }

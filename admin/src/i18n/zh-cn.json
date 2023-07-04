@@ -8,5 +8,6 @@
     "additionalSettings": "其他设置",
     "fallbackSettings": "回退设置",
     "severity": "严重程度",
-    "categoryActive": "活动类别"
+    "categoryActive": "活动类别",
+    "testMessage": "发送测试消息"
 }

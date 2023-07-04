@@ -9,7 +9,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Tab } from '@material-ui/core';
+import { Button, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import I18n from '@iobroker/adapter-react-v5/i18n';
 import { Connection } from '@iobroker/socket-client';
@@ -25,6 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWarning } from '@fortawesome/free-solid-svg-icons/faWarning';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import { faBell } from '@fortawesome/free-regular-svg-icons/faBell';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 
 const styles = (): Record<string, CreateCSSProperties> => ({
     input: {
@@ -180,6 +181,9 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
             color: '#ff8f00',
         },
     } as const;
+
+    /** Connection to the backend */
+    private readonly conn = new Connection({});
 
     constructor(props: SettingsProps) {
         super(props);
@@ -481,23 +485,53 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                         unmountOnExit
                         style={{ width: '100%' }}
                     >
-                        <CardContent style={{ display: 'flex' }}>
-                            <Container sx={{ lineHeight: 2, color: this.isDarkMode() ? 'white' : 'black' }}>
-                                {category.description[this.props.language]}
-                                <br />
-                                {this.renderAdapterActiveCheckbox(
-                                    'categoryActive',
-                                    `${scopeId}.${category.category}.active`,
-                                )}
-                                <br />
-                                {this.renderCategoryAdapterSelects({ scope: scopeId, category: category.category })}
-                            </Container>
-                            <div style={{ flex: 1, display: 'flex' }}> {this.renderIcon(category.severity)}</div>
+                        <CardContent>
+                            <div style={{ display: 'flex' }}>
+                                <Container sx={{ lineHeight: 2, color: this.isDarkMode() ? 'white' : 'black' }}>
+                                    {category.description[this.props.language]}
+                                    <br />
+                                    {this.renderAdapterActiveCheckbox(
+                                        'categoryActive',
+                                        `${scopeId}.${category.category}.active`,
+                                    )}
+                                    <br />
+                                    {this.renderCategoryAdapterSelects({ scope: scopeId, category: category.category })}
+                                </Container>
+                                <div style={{ flex: 1, display: 'flex' }}> {this.renderIcon(category.severity)}</div>
+                            </div>
+                            <div style={{ flex: 1, display: 'flex', justifyContent: 'end' }}>
+                                <Button variant="contained" onClick={() => this.sendTestMessage(scopeId, category)}>
+                                    <FontAwesomeIcon
+                                        icon={faPaperPlane}
+                                        size={'xl'}
+                                        color={'black'}
+                                        style={{ marginRight: '10px' }}
+                                    />
+                                    {I18n.t('testMessage')}
+                                </Button>
+                            </div>
                         </CardContent>
                     </Collapse>
                 </div>
             </Card>
         );
+    }
+
+    /**
+     * Send a test message with the current configuration
+     *
+     * @param scopeId id of the scope
+     * @param category the notification category to render card for
+     */
+    async sendTestMessage(scopeId: string, category: NotificationCategory): Promise<void> {
+        const res = await this.conn.sendTo(this.props.namespace, 'sendTestMessage', {
+            scopeId,
+            category: category.category,
+        });
+
+        if (res.ack) {
+            console.info('Test message acknowledged');
+        }
     }
 
     /**
@@ -648,13 +682,14 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      * React lifecycle hook, called when mounted
      */
     async componentDidMount(): Promise<void> {
-        const conn = new Connection({});
-
-        await conn.waitForFirstConnection();
+        await this.conn.waitForFirstConnection();
 
         try {
-            const { notifications: notificationsConfig } = await conn.sendTo(this.props.namespace, 'getCategories');
-            const { instances: supportedAdapterInstances } = await conn.sendTo(
+            const { notifications: notificationsConfig } = await this.conn.sendTo(
+                this.props.namespace,
+                'getCategories',
+            );
+            const { instances: supportedAdapterInstances } = await this.conn.sendTo(
                 this.props.namespace,
                 'getSupportedMessengers',
             );

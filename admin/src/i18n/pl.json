@@ -8,5 +8,6 @@
     "additionalSettings": "Dodatkowe ustawienia",
     "fallbackSettings": "Ustawienia zastępcze",
     "severity": "Powaga",
-    "categoryActive": "Kategoria aktywna"
+    "categoryActive": "Kategoria aktywna",
+    "testMessage": "Wyślij wiadomość testową"
 }

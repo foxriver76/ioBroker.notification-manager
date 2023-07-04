@@ -8,5 +8,6 @@
     "additionalSettings": "Aanvullende instellingen",
     "fallbackSettings": "Fallback-instellingen",
     "severity": "Ernst",
-    "categoryActive": "Categorie actief"
+    "categoryActive": "Categorie actief",
+    "testMessage": "Stuur een testbericht"
 }

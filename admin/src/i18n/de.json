@@ -8,5 +8,6 @@
     "additionalSettings": "Erweiterte Einstellungen",
     "fallbackSettings": "Fallback-Einstellungen",
     "severity": "Schweregrad",
-    "categoryActive": "Kategorie aktiv"
+    "categoryActive": "Kategorie aktiv",
+    "testMessage": "Testnachricht senden"
 }
