@@ -1,115 +1,128 @@
 {
-    "common": {
-        "name": "notification-manager",
-        "version": "0.1.0",
-        "news": {
-            "0.1.0": {
-                "en": "initial release",
-                "de": "erstausstrahlung",
-                "ru": "начальный выпуск",
-                "pt": "lançamento inicial",
-                "nl": "niet",
-                "fr": "initial release",
-                "it": "rilascio iniziale",
-                "es": "liberación inicial",
-                "pl": "pierwsze wydanie",
-                "uk": "початковий реліз",
-                "zh-cn": "初步释放"
-            },
-            "0.0.1": {
-                "en": "initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "Начальная версия",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie",
-                "uk": "Початкова версія",
-                "zh-cn": "首次出版"
-            }
-        },
-        "title": "Notification Manager",
-        "titleLang": {
-            "en": "Notification Manager",
-            "de": "Benachrichtigungsmanager",
-            "ru": "Менеджер уведомлений",
-            "pt": "Gerenciador de notificações",
-            "nl": "Meldingsbeheerder",
-            "fr": "Gestionnaire de notifications",
-            "it": "Responsabile delle notifiche",
-            "es": "Administrador de notificaciones",
-            "pl": "Menedżer powiadomień",
-            "uk": "Менеджер сповіщень",
-            "zh-cn": "通知管理器"
-        },
-        "desc": {
-            "en": "Manage ioBroker notifications, e.g. by sending them as messages",
-            "de": "Verwalten Sie ioBroker-Benachrichtigungen, z. indem Sie sie als Nachrichten versenden",
-            "ru": "Управление уведомлениями ioBroker, например. отправив их в виде сообщений",
-            "pt": "Gerenciar notificações do ioBroker, por exemplo enviando-os como mensagens",
-            "nl": "Beheer ioBroker-meldingen, b.v. door ze als berichten te verzenden",
-            "fr": "Gérer les notifications ioBroker, par ex. en les envoyant sous forme de messages",
-            "it": "Gestisci le notifiche ioBroker, ad es. inviandoli come messaggi",
-            "es": "Administre las notificaciones de ioBroker, p. enviándolos como mensajes",
-            "pl": "Zarządzaj powiadomieniami ioBroker, np. wysyłając je jako wiadomości",
-            "uk": "Керуйте сповіщеннями ioBroker, напр. надсилаючи їх як повідомлення",
-            "zh-cn": "管理 ioBroker 通知，例如通过将它们作为消息发送"
-        },
-        "authors": [
-            "foxriver76 <moritz.heusinger@gmail.com>"
-        ],
-        "keywords": [
-            "notifications",
-            "messages"
-        ],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "build/main.js",
-        "icon": "notification-manager.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/foxriver76/ioBroker.notification-manager/main/admin/notification-manager.png",
-        "readme": "https://github.com/foxriver76/ioBroker.notification-manager/blob/main/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "utility",
-        "compact": true,
-        "connectionType": "local",
-        "dataSource": "push",
-        "messagebox": true,
-        "adminUI": {
-            "config": "materialize"
-        },
-        "eraseOnUpload": true,
-        "dependencies": [
-            {
-                "js-controller": ">=3.3.22"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=5.0.0"
-            }
-        ]
+  "common": {
+    "name": "notification-manager",
+    "version": "0.1.1",
+    "news": {
+      "0.1.1": {
+        "en": "added possibility to send test messages from web interface (closes #1)",
+        "de": "zusätzliche möglichkeit, testnachrichten von der web-schnittstelle zu senden (schließt #1)",
+        "ru": "добавлена возможность отправки тестовых сообщений из веб-интерфейса (closes #1)",
+        "pt": "possibilidade adicionada de enviar mensagens de teste da interface web (fecha #1)",
+        "nl": "toegevoegd de mogelijkheid om test berichten te sturen van web interface (closes)",
+        "fr": "possibilité supplémentaire d'envoyer des messages de test depuis l'interface web (ferme #1)",
+        "it": "possibilità aggiunta di inviare messaggi di prova dall'interfaccia web (chiude #1)",
+        "es": "añadido posibilidad de enviar mensajes de prueba desde la interfaz web (closes #1)",
+        "pl": "dodano możliwość przesyłania wiadomości z interfejsu internetowego (zawiera 1)",
+        "uk": "можливість надсилати тестові повідомлення з веб-інтерфейсу (закриває #1)",
+        "zh-cn": "网络界传送试验信息的可能性(编号:#1)"
+      },
+      "0.1.0": {
+        "en": "initial release",
+        "de": "erstausstrahlung",
+        "ru": "начальный выпуск",
+        "pt": "lançamento inicial",
+        "nl": "niet",
+        "fr": "initial release",
+        "it": "rilascio iniziale",
+        "es": "liberación inicial",
+        "pl": "pierwsze wydanie",
+        "uk": "початковий реліз",
+        "zh-cn": "初步释放"
+      },
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "uk": "Початкова версія",
+        "zh-cn": "首次出版"
+      }
     },
-    "native": {
-        "categories": {},
-        "fallback": {
-            "info": {
-                "firstAdapter": "",
-                "secondAdapter": ""
-            },
-            "notify": {
-                "firstAdapter": "",
-                "secondAdapter": ""
-            },
-            "alert": {
-                "firstAdapter": "",
-                "secondAdapter": ""
-            }
-        }
+    "title": "Notification Manager",
+    "titleLang": {
+      "en": "Notification Manager",
+      "de": "Benachrichtigungsmanager",
+      "ru": "Менеджер уведомлений",
+      "pt": "Gerenciador de notificações",
+      "nl": "Meldingsbeheerder",
+      "fr": "Gestionnaire de notifications",
+      "it": "Responsabile delle notifiche",
+      "es": "Administrador de notificaciones",
+      "pl": "Menedżer powiadomień",
+      "uk": "Менеджер сповіщень",
+      "zh-cn": "通知管理器"
     },
-    "objects": [],
-    "instanceObjects": []
+    "desc": {
+      "en": "Manage ioBroker notifications, e.g. by sending them as messages",
+      "de": "Verwalten Sie ioBroker-Benachrichtigungen, z. indem Sie sie als Nachrichten versenden",
+      "ru": "Управление уведомлениями ioBroker, например. отправив их в виде сообщений",
+      "pt": "Gerenciar notificações do ioBroker, por exemplo enviando-os como mensagens",
+      "nl": "Beheer ioBroker-meldingen, b.v. door ze als berichten te verzenden",
+      "fr": "Gérer les notifications ioBroker, par ex. en les envoyant sous forme de messages",
+      "it": "Gestisci le notifiche ioBroker, ad es. inviandoli come messaggi",
+      "es": "Administre las notificaciones de ioBroker, p. enviándolos como mensajes",
+      "pl": "Zarządzaj powiadomieniami ioBroker, np. wysyłając je jako wiadomości",
+      "uk": "Керуйте сповіщеннями ioBroker, напр. надсилаючи їх як повідомлення",
+      "zh-cn": "管理 ioBroker 通知，例如通过将它们作为消息发送"
+    },
+    "authors": [
+      "foxriver76 <moritz.heusinger@gmail.com>"
+    ],
+    "keywords": [
+      "notifications",
+      "messages"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "build/main.js",
+    "icon": "notification-manager.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/foxriver76/ioBroker.notification-manager/main/admin/notification-manager.png",
+    "readme": "https://github.com/foxriver76/ioBroker.notification-manager/blob/main/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "utility",
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "push",
+    "messagebox": true,
+    "adminUI": {
+      "config": "materialize"
+    },
+    "eraseOnUpload": true,
+    "dependencies": [
+      {
+        "js-controller": ">=3.3.22"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=5.0.0"
+      }
+    ]
+  },
+  "native": {
+    "categories": {},
+    "fallback": {
+      "info": {
+        "firstAdapter": "",
+        "secondAdapter": ""
+      },
+      "notify": {
+        "firstAdapter": "",
+        "secondAdapter": ""
+      },
+      "alert": {
+        "firstAdapter": "",
+        "secondAdapter": ""
+      }
+    }
+  },
+  "objects": [],
+  "instanceObjects": []
 }

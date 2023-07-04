@@ -70,6 +70,9 @@ if the messaging adapter was able to deliver the notification, else it should re
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### 0.1.1 (2023-07-04)
+* (foxriver76) added possibility to send test messages from web interface (closes #1)
+
 ### 0.1.0 (2023-06-02)
 * (foxriver76) initial release
 
