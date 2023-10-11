@@ -139,7 +139,7 @@ class NotificationManager extends utils.Adapter {
                 }
             }
 
-            this.sendTo(obj.from, obj.command, { notifications: notifications }, obj.callback);
+            this.sendTo(obj.from, obj.command, { notifications }, obj.callback);
             return;
         }
 
