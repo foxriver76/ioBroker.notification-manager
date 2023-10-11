@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "notification-manager",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "news": {
+      "0.1.2": {
+        "en": "also show notifications provided by adapters in the configuration",
+        "de": "auch meldungen von adaptern in der konfiguration anzeigen",
+        "ru": "также показывают уведомления, предоставленные адаптерами в конфигурации",
+        "pt": "também mostrar notificações fornecidas por adaptadores na configuração",
+        "nl": "laat ook berichten zien door adapters in de configuratie",
+        "fr": "afficher également les notifications fournies par les adaptateurs dans la configuration",
+        "it": "anche mostrare le notifiche fornite dagli adattatori nella configurazione",
+        "es": "también mostrar notificaciones proporcionadas por los adaptadores en la configuración",
+        "pl": "wykazuje również powiadomienia dostarczone przez adapterów w konfiguracji",
+        "uk": "також показати повідомлення, що надаються адаптерами в конфігурації",
+        "zh-cn": "组合的适应者也发出通知"
+      },
       "0.1.1": {
         "en": "added possibility to send test messages from web interface (closes #1)",
         "de": "zusätzliche möglichkeit, testnachrichten von der web-schnittstelle zu senden (schließt #1)",
