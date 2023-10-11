@@ -126,8 +126,20 @@ class NotificationManager extends utils.Adapter {
             });
 
             const ioPack = JSON.parse(content);
+            const notifications = ioPack.notifications || [];
 
-            this.sendTo(obj.from, obj.command, { notifications: ioPack.notifications }, obj.callback);
+            const res = await this.getObjectViewAsync('system', 'adapter', {
+                startkey: 'system.adapter.',
+                endkey: 'system.adapter.\u9999',
+            });
+
+            for (const entry of res.rows) {
+                if (entry.value.notifications) {
+                    notifications.push(...entry.value.notifications);
+                }
+            }
+
+            this.sendTo(obj.from, obj.command, { notifications: notifications }, obj.callback);
             return;
         }
 
@@ -138,7 +150,6 @@ class NotificationManager extends utils.Adapter {
             });
 
             const instances = res.rows
-                // @ts-expect-error types are wrong
                 .filter((row) => row.value?.common.supportedMessages?.notifications)
                 .map((obj) => obj.id.substring('system.adapter.'.length));
 
@@ -283,13 +294,9 @@ class NotificationManager extends utils.Adapter {
                     };
 
                     try {
-                        const res = await this.sendToAsync(
-                            adapterInstance,
-                            'sendNotification',
-                            localizedNotification,
-                            // @ts-expect-error the option is controller v5 only
-                            { timeout: this.SEND_TO_TIMEOUT },
-                        );
+                        const res = await this.sendToAsync(adapterInstance, 'sendNotification', localizedNotification, {
+                            timeout: this.SEND_TO_TIMEOUT,
+                        });
 
                         // @ts-expect-error types are wrong, this is a callback not a new message
                         if (typeof res === 'object' && res.sent) {

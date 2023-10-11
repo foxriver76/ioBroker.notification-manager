@@ -38,7 +38,17 @@ class NotificationManager extends utils.Adapter {
         encoding: "utf-8"
       });
       const ioPack = JSON.parse(content);
-      this.sendTo(obj.from, obj.command, { notifications: ioPack.notifications }, obj.callback);
+      const notifications = ioPack.notifications || [];
+      const res = await this.getObjectViewAsync("system", "adapter", {
+        startkey: "system.adapter.",
+        endkey: "system.adapter.\u9999"
+      });
+      for (const entry of res.rows) {
+        if (entry.value.notifications) {
+          notifications.push(...entry.value.notifications);
+        }
+      }
+      this.sendTo(obj.from, obj.command, { notifications }, obj.callback);
       return;
     }
     if (obj.command === "getSupportedMessengers") {
@@ -141,12 +151,9 @@ class NotificationManager extends utils.Adapter {
             category: await this.localize(category)
           };
           try {
-            const res = await this.sendToAsync(
-              adapterInstance,
-              "sendNotification",
-              localizedNotification,
-              { timeout: this.SEND_TO_TIMEOUT }
-            );
+            const res = await this.sendToAsync(adapterInstance, "sendNotification", localizedNotification, {
+              timeout: this.SEND_TO_TIMEOUT
+            });
             if (typeof res === "object" && res.sent) {
               this.log.info(
                 `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
