@@ -103,6 +103,11 @@ interface LocalizedNotification {
 class NotificationManager extends utils.Adapter {
     /** Timeout to wait for response by instances on sendTo */
     private readonly SEND_TO_TIMEOUT = 5_000;
+    /** The supported categories for messages sent by the user */
+    private readonly SUPPORTED_USER_CATEGORIES = ['notify', 'info', 'alert'] as const;
+    /** The scope used for messages sent by the user */
+    private readonly USER_SCOPE = 'user';
+
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
@@ -118,56 +123,112 @@ class NotificationManager extends utils.Adapter {
      * Listen to messages from frontend
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
-        if (obj.command === 'getCategories') {
-            const ioPackPath = require.resolve('iobroker.js-controller/io-package.json');
+        switch (obj.command) {
+            case 'getCategories':
+                return this.handleGetCategoriesMessage(obj);
+            case 'getSupportedMessengers':
+                return this.handleGetSupportedMessengersMessage(obj);
+            case 'sendTestMessage':
+                return this.handleSendTestMessageMessage(obj);
+            case 'sendUserNotification':
+                return this.handleSendUserNotificationMessage(obj);
+            default:
+                this.log.warn(`Unsupported message received "${obj.command}"`);
+        }
+    }
 
-            const content = await fs.promises.readFile(ioPackPath, {
-                encoding: 'utf-8',
-            });
+    /**
+     * Handle a `sendUserNotification` message, which is used to register a notification by the user itself
+     *
+     * @param obj the ioBroker message
+     */
+    private async handleSendUserNotificationMessage(obj: ioBroker.Message): Promise<void> {
+        if (typeof obj.message !== 'object') {
+            return;
+        }
 
-            const ioPack = JSON.parse(content);
-            const notifications = ioPack.notifications || [];
+        const { category, message } = obj.message;
 
-            const res = await this.getObjectViewAsync('system', 'adapter', {
-                startkey: 'system.adapter.',
-                endkey: 'system.adapter.\u9999',
-            });
+        if (!this.SUPPORTED_USER_CATEGORIES.includes(category)) {
+            this.sendTo(
+                obj.from,
+                obj.command,
+                {
+                    success: false,
+                    error: `Unsupported category "${category}", please use one of "${this.SUPPORTED_USER_CATEGORIES.join(
+                        ', ',
+                    )}"`,
+                },
+                obj.callback,
+            );
+        }
 
-            for (const entry of res.rows) {
-                if (entry.value.notifications) {
-                    notifications.push(...entry.value.notifications);
-                }
+        // @ts-expect-error js-controller types are restricted to "system" here, should be fixed soon
+        await this.registerNotification(this.USER_SCOPE, severity, message);
+        this.sendTo(obj.from, obj.command, { success: true }, obj.callback);
+    }
+
+    /**
+     * Handle a `sendTestMessage` message used to send a test message by registering a notification
+     *
+     * @param obj the ioBroker message
+     */
+    private async handleSendTestMessageMessage(obj: ioBroker.Message): Promise<void> {
+        if (typeof obj.message !== 'object') {
+            return;
+        }
+
+        const { scopeId, category } = obj.message;
+        this.log.info(`Send test message for scope "${scopeId}" and category "${category}"`);
+        await this.registerNotification(scopeId, category, 'Test notification from notification-manager');
+        this.sendTo(obj.from, obj.command, { ack: true }, obj.callback);
+    }
+
+    /**
+     * Handle a `getSupportedMessengers` message used to determine all supported messaging adapters
+     *
+     * @param obj the ioBroker message
+     */
+    private async handleGetSupportedMessengersMessage(obj: ioBroker.Message): Promise<void> {
+        const res = await this.getObjectViewAsync('system', 'instance', {
+            startkey: 'system.adapter.',
+            endkey: 'system.adapter.\u9999',
+        });
+
+        const instances = res.rows
+            .filter((row) => row.value?.common.supportedMessages?.notifications)
+            .map((obj) => obj.id.substring('system.adapter.'.length));
+
+        this.sendTo(obj.from, obj.command, { instances }, obj.callback);
+    }
+
+    /**
+     * Handle a `getCategories` message used to determine all supported notification categories
+     *
+     * @param obj the ioBroker message
+     */
+    private async handleGetCategoriesMessage(obj: ioBroker.Message): Promise<void> {
+        const ioPackPath = require.resolve('iobroker.js-controller/io-package.json');
+
+        const content = await fs.promises.readFile(ioPackPath, {
+            encoding: 'utf-8',
+        });
+
+        const ioPack = JSON.parse(content);
+        const notifications = ioPack.notifications || [];
+
+        const res = await this.getObjectViewAsync('system', 'adapter', {
+            startkey: 'system.adapter.',
+            endkey: 'system.adapter.\u9999',
+        });
+
+        for (const entry of res.rows) {
+            if (entry.value.notifications) {
+                notifications.push(...entry.value.notifications);
             }
-
-            this.sendTo(obj.from, obj.command, { notifications }, obj.callback);
-            return;
         }
 
-        if (obj.command === 'getSupportedMessengers') {
-            const res = await this.getObjectViewAsync('system', 'instance', {
-                startkey: 'system.adapter.',
-                endkey: 'system.adapter.\u9999',
-            });
-
-            const instances = res.rows
-                .filter((row) => row.value?.common.supportedMessages?.notifications)
-                .map((obj) => obj.id.substring('system.adapter.'.length));
-
-            this.sendTo(obj.from, obj.command, { instances }, obj.callback);
-            return;
-        }
-
-        if (obj.command === 'sendTestMessage') {
-            if (typeof obj.message !== 'object') {
-                return;
-            }
-
-            const { scopeId, category } = obj.message;
-            this.log.info(`Send test message for scope "${scopeId}" and category "${category}"`);
-            await this.registerNotification(scopeId, category, 'Test notification from notification-manager');
-            this.sendTo(obj.from, obj.command, { ack: true }, obj.callback);
-            return;
-        }
+        this.sendTo(obj.from, obj.command, { notifications }, obj.callback);
     }
 
     /**
@@ -175,7 +236,7 @@ class NotificationManager extends utils.Adapter {
      */
     private async onReady(): Promise<void> {
         this.log.info('Starting notification manager ...');
-        await this.subscribeForeignStates('system.host.*.notifications.*');
+        await this.subscribeForeignStatesAsync('system.host.*.notifications.*');
         await this.handleNotifications();
     }
 

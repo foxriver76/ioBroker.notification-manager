@@ -90,6 +90,7 @@
       "notifications",
       "messages"
     ],
+    "tier": 2,
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "build/main.js",
@@ -119,6 +120,135 @@
       }
     ]
   },
+  "notifications": [
+    {
+      "scope": "user",
+      "name": {
+        "en": "User-specific news",
+        "de": "Benutzerspezifische Nachrichten",
+        "ru": "Новости для конкретных пользователей",
+        "pt": "Notícias específicas do utilizador",
+        "nl": "Gebruikersspecifiek nieuws",
+        "fr": "Nouvelles spécifiques à l'utilisateur",
+        "it": "Notizie specifiche per l'utente",
+        "es": "Noticias específicas de los usuarios",
+        "pl": "Wiadomości specyficzne dla użytkownika",
+        "uk": "Користувацькі новини",
+        "zh-cn": "特定用户新闻"
+      },
+      "description": {
+        "en": "These notifications represent news sent by the user itself.",
+        "de": "Bei diesen Meldungen handelt es sich um Nachrichten, die vom Nutzer selbst gesendet werden.",
+        "ru": "Эти уведомления представляют собой новости, отправленные самим пользователем.",
+        "pt": "Estas notificações representam notícias enviadas pelo próprio utilizador.",
+        "nl": "Deze meldingen vertegenwoordigen nieuws dat door de gebruiker zelf is verzonden.",
+        "fr": "Ces notifications représentent des nouvelles envoyées par l'utilisateur lui-même.",
+        "it": "Queste notifiche rappresentano notizie inviate dall'utente stesso.",
+        "es": "Estas notificaciones representan noticias enviadas por el propio usuario.",
+        "pl": "Powiadomienia te reprezentują wiadomości wysyłane przez samego użytkownika.",
+        "uk": "Ці сповіщення являють собою новини, надіслані самим користувачем.",
+        "zh-cn": "这些通知代表用户自己发送的新闻。"
+      },
+      "categories": [
+        {
+          "category": "notify",
+          "name": {
+            "en": "Informal news",
+            "de": "Informelle Nachrichten",
+            "ru": "Неофициальные новости",
+            "pt": "Notícias informais",
+            "nl": "Informeel nieuws",
+            "fr": "Nouvelles informelles",
+            "it": "Notizie informali",
+            "es": "Noticias oficiosas",
+            "pl": "Nieformalne wiadomości",
+            "uk": "Неофіційні новини",
+            "zh-cn": "非正式新闻"
+          },
+          "severity": "notify",
+          "description": {
+            "en": "These messages represent general news, that the user wants to be informed on the \"notify\" level.",
+            "de": "Diese Meldungen stellen allgemeine Nachrichten dar, über die der Nutzer auf der Ebene \"Benachrichtigung\" informiert werden möchte.",
+            "ru": "Эти сообщения представляют собой общие новости, о которых пользователь хочет быть проинформирован на уровне \"уведомлять\".",
+            "pt": "Estas mensagens representam notícias gerais, de que o utilizador pretende ser informado ao nível da \"notificação\".",
+            "nl": "Deze berichten vertegenwoordigen algemeen nieuws waarvan de gebruiker op de hoogte wil worden gebracht op het niveau \"kennisgeving\".",
+            "fr": "Ces messages représentent des nouvelles générales dont l'utilisateur souhaite être informé au niveau \"notifier\".",
+            "it": "Questi messaggi rappresentano notizie generali, di cui l'utente vuole essere informato a livello di \"notifica\".",
+            "es": "Estos mensajes representan noticias generales de las que el usuario desea estar informado a nivel de \"notificación\".",
+            "pl": "Wiadomości te reprezentują ogólne wiadomości, o których użytkownik chce być informowany na poziomie \"powiadomienia\".",
+            "uk": "Ці повідомлення представляють загальні новини, про які користувач хоче бути поінформованим на рівні \"сповіщення\".",
+            "zh-cn": "这些信息代表一般新闻，用户希望在 \"通知 \"级别上获知。"
+          },
+          "regex": [],
+          "limit": 100
+        },
+        {
+          "category": "info",
+          "name": {
+            "en": "",
+            "de": "",
+            "ru": "",
+            "pt": "",
+            "nl": "",
+            "fr": "",
+            "it": "",
+            "es": "",
+            "pl": "",
+            "uk": "",
+            "zh-cn": ""
+          },
+          "severity": "info",
+          "description": {
+            "en": "",
+            "de": "",
+            "ru": "",
+            "pt": "",
+            "nl": "",
+            "fr": "",
+            "it": "",
+            "es": "",
+            "pl": "",
+            "uk": "",
+            "zh-cn": ""
+          },
+          "regex": [],
+          "limit": 100
+        },
+        {
+          "category": "alert",
+          "name": {
+            "en": "",
+            "de": "",
+            "ru": "",
+            "pt": "",
+            "nl": "",
+            "fr": "",
+            "it": "",
+            "es": "",
+            "pl": "",
+            "uk": "",
+            "zh-cn": ""
+          },
+          "severity": "alert",
+          "description": {
+            "en": "",
+            "de": "",
+            "ru": "",
+            "pt": "",
+            "nl": "",
+            "fr": "",
+            "it": "",
+            "es": "",
+            "pl": "",
+            "uk": "",
+            "zh-cn": ""
+          },
+          "regex": [],
+          "limit": 100
+        }
+      ]
+    }
+  ],
   "native": {
     "categories": {},
     "fallback": {
