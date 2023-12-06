@@ -89,6 +89,7 @@ if the messaging adapter was able to deliver the notification, else it should re
 -->
 ### **WORK IN PROGRESS**
 * (foxriver76) added possibility to send custom messages
+* (foxriver76) added UI indicators for each category
 
 ### 0.1.2 (2023-10-11)
 * (foxriver76) also show notifications provided by adapters in the configuration
