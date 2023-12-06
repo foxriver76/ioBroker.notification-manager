@@ -130,19 +130,19 @@ class NotificationManager extends utils.Adapter {
                 return this.handleGetSupportedMessengersMessage(obj);
             case 'sendTestMessage':
                 return this.handleSendTestMessageMessage(obj);
-            case 'sendUserNotification':
-                return this.handleSendUserNotificationMessage(obj);
+            case 'registerUserNotification':
+                return this.handleRegisterUserNotificationMessage(obj);
             default:
                 this.log.warn(`Unsupported message received "${obj.command}"`);
         }
     }
 
     /**
-     * Handle a `sendUserNotification` message, which is used to register a notification by the user itself
+     * Handle a `registerUserNotification` message, which is used to register a notification by the user itself
      *
      * @param obj the ioBroker message
      */
-    private async handleSendUserNotificationMessage(obj: ioBroker.Message): Promise<void> {
+    private async handleRegisterUserNotificationMessage(obj: ioBroker.Message): Promise<void> {
         if (typeof obj.message !== 'object') {
             return;
         }
