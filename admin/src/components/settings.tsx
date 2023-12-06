@@ -446,7 +446,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 
         const adapterName = adapter.split('.')[0];
 
-        return <img src={`/adapter/${adapterName}/${adapterName}.png`} alt={adapter} width={'40px'} />;
+        return <img src={`/adapter/${adapterName}/${adapterName}.png`} alt={adapter} width={'40px'} title={adapter} />;
     }
 
     /**
