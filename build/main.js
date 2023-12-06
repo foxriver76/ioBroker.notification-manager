@@ -65,7 +65,7 @@ class NotificationManager extends utils.Adapter {
         obj.callback
       );
     }
-    await this.registerNotification(this.USER_SCOPE, severity, message);
+    await this.registerNotification(this.USER_SCOPE, category, message);
     this.sendTo(obj.from, obj.command, { success: true }, obj.callback);
   }
   async handleSendTestMessageMessage(obj) {
@@ -141,15 +141,15 @@ class NotificationManager extends utils.Adapter {
   }
   findResponsibleInstances(options) {
     var _a, _b, _c, _d;
-    const { scopeId, categoryId, severity: severity2 } = options;
+    const { scopeId, categoryId, severity } = options;
     return {
       firstAdapter: {
         main: (_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.firstAdapter,
-        fallback: this.config.fallback[severity2].firstAdapter
+        fallback: this.config.fallback[severity].firstAdapter
       },
       secondAdapter: {
         main: (_d = (_c = this.config.categories[scopeId]) == null ? void 0 : _c[categoryId]) == null ? void 0 : _d.secondAdapter,
-        fallback: this.config.fallback[severity2].secondAdapter
+        fallback: this.config.fallback[severity].secondAdapter
       }
     };
   }

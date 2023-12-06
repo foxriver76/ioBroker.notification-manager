@@ -164,7 +164,7 @@ class NotificationManager extends utils.Adapter {
         }
 
         // @ts-expect-error js-controller types are restricted to "system" here, should be fixed soon
-        await this.registerNotification(this.USER_SCOPE, severity, message);
+        await this.registerNotification(this.USER_SCOPE, category, message);
         this.sendTo(obj.from, obj.command, { success: true }, obj.callback);
     }
 
