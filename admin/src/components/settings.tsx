@@ -435,6 +435,21 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     }
 
     /**
+     * Render the adapter icon on a category card
+     *
+     * @param adapter the adapter instance id
+     */
+    renderAdapterIcon(adapter: string): React.JSX.Element | null {
+        if (!adapter) {
+            return null;
+        }
+
+        const adapterName = adapter.split('.')[0];
+
+        return <img src={`/adapter/${adapterName}/${adapterName}.png`} alt={adapter} width={'40px'} title={adapter} />;
+    }
+
+    /**
      * Render a card for the category
      *
      * @param scopeId id of the scope
@@ -442,6 +457,15 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      */
     renderCategoryCard(scopeId: string, category: NotificationCategory): React.JSX.Element {
         const elementId = category.category;
+        const isActive = this.props.native.categories[scopeId]?.[elementId]?.active ?? true;
+
+        const firstAdapter =
+            this.props.native.categories[scopeId]?.[elementId]?.firstAdapter ||
+            this.props.native.fallback[category.severity].firstAdapter;
+
+        const secondAdapter =
+            this.props.native.categories[scopeId]?.[elementId]?.secondAdapter ||
+            this.props.native.fallback[category.severity].secondAdapter;
 
         return (
             <Card
@@ -456,21 +480,25 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                     title={category.name[this.props.language]}
                     titleTypographyProps={{ fontWeight: 'bold', fontSize: 16 }}
                     action={
-                        <IconButton
-                            onClick={() => {
-                                this.setState({
-                                    cardOpen: {
-                                        ...this.state.cardOpen,
-                                        [elementId]: !this.state.cardOpen[elementId],
-                                    },
-                                });
-                            }}
-                            aria-label="expand"
-                            size="small"
-                            style={{ color: this.isDarkMode() ? 'white' : 'black' }}
-                        >
-                            {this.state.cardOpen[elementId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                        </IconButton>
+                        <div style={{ display: 'flex' }}>
+                            {isActive ? this.renderAdapterIcon(firstAdapter) : null}
+                            {isActive ? this.renderAdapterIcon(secondAdapter) : null}
+                            <IconButton
+                                onClick={() => {
+                                    this.setState({
+                                        cardOpen: {
+                                            ...this.state.cardOpen,
+                                            [elementId]: !this.state.cardOpen[elementId],
+                                        },
+                                    });
+                                }}
+                                aria-label="expand"
+                                size="small"
+                                style={{ color: this.isDarkMode() ? 'white' : 'black' }}
+                            >
+                                {this.state.cardOpen[elementId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                            </IconButton>
+                        </div>
                     }
                 />
                 <div

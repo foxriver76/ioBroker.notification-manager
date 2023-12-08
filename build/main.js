@@ -26,57 +26,89 @@ class NotificationManager extends utils.Adapter {
       name: "notification-manager"
     });
     this.SEND_TO_TIMEOUT = 5e3;
+    this.SUPPORTED_USER_CATEGORIES = ["notify", "info", "alert"];
+    this.USER_SCOPE = "user";
     this.on("ready", this.onReady.bind(this));
     this.on("stateChange", this.onStateChange.bind(this));
     this.on("unload", this.onUnload.bind(this));
     this.on("message", this.onMessage.bind(this));
   }
   async onMessage(obj) {
-    if (obj.command === "getCategories") {
-      const ioPackPath = require.resolve("iobroker.js-controller/io-package.json");
-      const content = await import_fs.default.promises.readFile(ioPackPath, {
-        encoding: "utf-8"
-      });
-      const ioPack = JSON.parse(content);
-      const notifications = ioPack.notifications || [];
-      const res = await this.getObjectViewAsync("system", "adapter", {
-        startkey: "system.adapter.",
-        endkey: "system.adapter.\u9999"
-      });
-      for (const entry of res.rows) {
-        if (entry.value.notifications) {
-          notifications.push(...entry.value.notifications);
-        }
+    switch (obj.command) {
+      case "getCategories":
+        return this.handleGetCategoriesMessage(obj);
+      case "getSupportedMessengers":
+        return this.handleGetSupportedMessengersMessage(obj);
+      case "sendTestMessage":
+        return this.handleSendTestMessageMessage(obj);
+      case "registerUserNotification":
+        return this.handleRegisterUserNotificationMessage(obj);
+      default:
+        this.log.warn(`Unsupported message received "${obj.command}"`);
+    }
+  }
+  async handleRegisterUserNotificationMessage(obj) {
+    if (typeof obj.message !== "object") {
+      return;
+    }
+    const { category, message } = obj.message;
+    if (!this.SUPPORTED_USER_CATEGORIES.includes(category)) {
+      this.sendTo(
+        obj.from,
+        obj.command,
+        {
+          success: false,
+          error: `Unsupported category "${category}", please use one of "${this.SUPPORTED_USER_CATEGORIES.join(
+            ", "
+          )}"`
+        },
+        obj.callback
+      );
+    }
+    await this.registerNotification(this.USER_SCOPE, category, message);
+    this.sendTo(obj.from, obj.command, { success: true }, obj.callback);
+  }
+  async handleSendTestMessageMessage(obj) {
+    if (typeof obj.message !== "object") {
+      return;
+    }
+    const { scopeId, category } = obj.message;
+    this.log.info(`Send test message for scope "${scopeId}" and category "${category}"`);
+    await this.registerNotification(scopeId, category, "Test notification from notification-manager");
+    this.sendTo(obj.from, obj.command, { ack: true }, obj.callback);
+  }
+  async handleGetSupportedMessengersMessage(obj) {
+    const res = await this.getObjectViewAsync("system", "instance", {
+      startkey: "system.adapter.",
+      endkey: "system.adapter.\u9999"
+    });
+    const instances = res.rows.filter((row) => {
+      var _a, _b;
+      return (_b = (_a = row.value) == null ? void 0 : _a.common.supportedMessages) == null ? void 0 : _b.notifications;
+    }).map((obj2) => obj2.id.substring("system.adapter.".length));
+    this.sendTo(obj.from, obj.command, { instances }, obj.callback);
+  }
+  async handleGetCategoriesMessage(obj) {
+    const ioPackPath = require.resolve("iobroker.js-controller/io-package.json");
+    const content = await import_fs.default.promises.readFile(ioPackPath, {
+      encoding: "utf-8"
+    });
+    const ioPack = JSON.parse(content);
+    const notifications = ioPack.notifications || [];
+    const res = await this.getObjectViewAsync("system", "adapter", {
+      startkey: "system.adapter.",
+      endkey: "system.adapter.\u9999"
+    });
+    for (const entry of res.rows) {
+      if (entry.value.notifications) {
+        notifications.push(...entry.value.notifications);
       }
-      this.sendTo(obj.from, obj.command, { notifications }, obj.callback);
-      return;
     }
-    if (obj.command === "getSupportedMessengers") {
-      const res = await this.getObjectViewAsync("system", "instance", {
-        startkey: "system.adapter.",
-        endkey: "system.adapter.\u9999"
-      });
-      const instances = res.rows.filter((row) => {
-        var _a, _b;
-        return (_b = (_a = row.value) == null ? void 0 : _a.common.supportedMessages) == null ? void 0 : _b.notifications;
-      }).map((obj2) => obj2.id.substring("system.adapter.".length));
-      this.sendTo(obj.from, obj.command, { instances }, obj.callback);
-      return;
-    }
-    if (obj.command === "sendTestMessage") {
-      if (typeof obj.message !== "object") {
-        return;
-      }
-      const { scopeId, category } = obj.message;
-      this.log.info(`Send test message for scope "${scopeId}" and category "${category}"`);
-      await this.registerNotification(scopeId, category, "Test notification from notification-manager");
-      this.sendTo(obj.from, obj.command, { ack: true }, obj.callback);
-      return;
-    }
+    this.sendTo(obj.from, obj.command, { notifications }, obj.callback);
   }
   async onReady() {
     this.log.info("Starting notification manager ...");
-    await this.subscribeForeignStates("system.host.*.notifications.*");
+    await this.subscribeForeignStatesAsync("system.host.*.notifications.*");
     await this.handleNotifications();
   }
   onUnload(callback) {
