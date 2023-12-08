@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "notification-manager",
-    "version": "0.1.2",
+    "version": "1.0.0",
     "news": {
+      "1.0.0": {
+        "en": "added possibility to send custom messages\nadded UI indicators for each category",
+        "de": "möglichkeit, benutzerdefinierte nachrichten zu senden\nuI-Indikatoren für jede Kategorie hinzugefügt",
+        "ru": "добавлена возможность отправки пользовательских сообщений\nдобавлены показатели UI для каждой категории",
+        "pt": "possibilidade adicionada de enviar mensagens personalizadas\nadicionado indicadores UI para cada categoria",
+        "nl": "voegde de mogelijkheid toe om gebruikelijke berichten te sturen\nvoegde UI indicatoren toe voor elke categorie",
+        "fr": "possibilité supplémentaire d'envoyer des messages personnalisés\ndes indicateurs UI ajoutés pour chaque catégorie",
+        "it": "possibilità aggiunta di inviare messaggi personalizzati\nindicatori UI aggiunti per ogni categoria",
+        "es": "añadido posibilidad de enviar mensajes personalizados\nindicadores UI añadidos para cada categoría",
+        "pl": "dostarczać możliwość przesyłania danych docelowych\ndodano wskaźniki UI dla każdej kategorii",
+        "uk": "додано можливість надсилати спеціальні повідомлення\nдодано UI показники для кожної категорії",
+        "zh-cn": "发出习惯信息的可能性\n增加每个类别UI指标"
+      },
       "0.1.2": {
         "en": "also show notifications provided by adapters in the configuration",
         "de": "auch meldungen von adaptern in der konfiguration anzeigen",
