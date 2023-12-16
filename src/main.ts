@@ -111,7 +111,7 @@ class NotificationManager extends utils.Adapter {
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
             ...options,
-            name: 'notification-manager',
+            name: 'notification-manager'
         });
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
@@ -125,13 +125,17 @@ class NotificationManager extends utils.Adapter {
     private async onMessage(obj: ioBroker.Message): Promise<void> {
         switch (obj.command) {
             case 'getCategories':
-                return this.handleGetCategoriesMessage(obj);
+                await this.handleGetCategoriesMessage(obj);
+                break;
             case 'getSupportedMessengers':
-                return this.handleGetSupportedMessengersMessage(obj);
+                await this.handleGetSupportedMessengersMessage(obj);
+                break;
             case 'sendTestMessage':
-                return this.handleSendTestMessageMessage(obj);
+                await this.handleSendTestMessageMessage(obj);
+                break;
             case 'registerUserNotification':
-                return this.handleRegisterUserNotificationMessage(obj);
+                await this.handleRegisterUserNotificationMessage(obj);
+                break;
             default:
                 this.log.warn(`Unsupported message received "${obj.command}"`);
         }
@@ -156,10 +160,10 @@ class NotificationManager extends utils.Adapter {
                 {
                     success: false,
                     error: `Unsupported category "${category}", please use one of "${this.SUPPORTED_USER_CATEGORIES.join(
-                        ', ',
-                    )}"`,
+                        ', '
+                    )}"`
                 },
-                obj.callback,
+                obj.callback
             );
         }
 
@@ -192,12 +196,12 @@ class NotificationManager extends utils.Adapter {
     private async handleGetSupportedMessengersMessage(obj: ioBroker.Message): Promise<void> {
         const res = await this.getObjectViewAsync('system', 'instance', {
             startkey: 'system.adapter.',
-            endkey: 'system.adapter.\u9999',
+            endkey: 'system.adapter.\u9999'
         });
 
         const instances = res.rows
-            .filter((row) => row.value?.common.supportedMessages?.notifications)
-            .map((obj) => obj.id.substring('system.adapter.'.length));
+            .filter(row => row.value?.common.supportedMessages?.notifications)
+            .map(obj => obj.id.substring('system.adapter.'.length));
 
         this.sendTo(obj.from, obj.command, { instances }, obj.callback);
     }
@@ -211,7 +215,7 @@ class NotificationManager extends utils.Adapter {
         const ioPackPath = require.resolve('iobroker.js-controller/io-package.json');
 
         const content = await fs.promises.readFile(ioPackPath, {
-            encoding: 'utf-8',
+            encoding: 'utf-8'
         });
 
         const ioPack = JSON.parse(content);
@@ -219,7 +223,7 @@ class NotificationManager extends utils.Adapter {
 
         const res = await this.getObjectViewAsync('system', 'adapter', {
             startkey: 'system.adapter.',
-            endkey: 'system.adapter.\u9999',
+            endkey: 'system.adapter.\u9999'
         });
 
         for (const entry of res.rows) {
@@ -270,7 +274,7 @@ class NotificationManager extends utils.Adapter {
             const { result: notifications } = (await this.sendToHostAsync(
                 host,
                 'getNotifications',
-                {},
+                {}
             )) as unknown as GetNotificationsResponse;
 
             this.log.debug(`Received notifications from "${host}": ${JSON.stringify(notifications)}`);
@@ -285,10 +289,10 @@ class NotificationManager extends utils.Adapter {
     private async getAllHosts(): Promise<HostId[]> {
         const res = await this.getObjectViewAsync('system', 'host', {
             startkey: 'system.host.',
-            endkey: 'system.host.\u9999',
+            endkey: 'system.host.\u9999'
         });
 
-        return res.rows.map((host) => host.id as HostId);
+        return res.rows.map(host => host.id as HostId);
     }
 
     /**
@@ -302,12 +306,12 @@ class NotificationManager extends utils.Adapter {
         return {
             firstAdapter: {
                 main: this.config.categories[scopeId]?.[categoryId]?.firstAdapter,
-                fallback: this.config.fallback[severity].firstAdapter,
+                fallback: this.config.fallback[severity].firstAdapter
             },
             secondAdapter: {
                 main: this.config.categories[scopeId]?.[categoryId]?.secondAdapter,
-                fallback: this.config.fallback[severity].secondAdapter,
-            },
+                fallback: this.config.fallback[severity].secondAdapter
+            }
         };
     }
 
@@ -331,7 +335,7 @@ class NotificationManager extends utils.Adapter {
                 const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
                     scopeId,
                     categoryId,
-                    severity: category.severity,
+                    severity: category.severity
                 });
 
                 for (const configuredAdapter of [firstAdapter, secondAdapter]) {
@@ -343,7 +347,7 @@ class NotificationManager extends utils.Adapter {
 
                     const bareScope: Omit<NotificationScope, 'categories'> = {
                         name: scope.name,
-                        description: scope.description,
+                        description: scope.description
                     };
 
                     this.log.info(`Send notification "${scopeId}.${categoryId}" to "${adapterInstance}"`);
@@ -351,34 +355,34 @@ class NotificationManager extends utils.Adapter {
                     const localizedNotification: LocalizedNotification = {
                         host,
                         scope: await this.localize(bareScope),
-                        category: await this.localize(category),
+                        category: await this.localize(category)
                     };
 
                     try {
                         const res = await this.sendToAsync(adapterInstance, 'sendNotification', localizedNotification, {
-                            timeout: this.SEND_TO_TIMEOUT,
+                            timeout: this.SEND_TO_TIMEOUT
                         });
 
                         // @ts-expect-error types are wrong, this is a callback not a new message
                         if (typeof res === 'object' && res.sent) {
                             this.log.info(
-                                `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`,
+                                `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
                             );
 
                             await this.sendToHostAsync(host, 'clearNotifications', {
                                 scopeFilter: scopeId,
-                                categoryFilter: categoryId,
+                                categoryFilter: categoryId
                             });
                             return;
                         }
                     } catch (e: any) {
                         this.log.error(
-                            `Error appeared while sending notification "${scopeId}.${categoryId}" to "${adapterInstance}": ${e.message}`,
+                            `Error appeared while sending notification "${scopeId}.${categoryId}" to "${adapterInstance}": ${e.message}`
                         );
                     }
 
                     this.log.error(
-                        `Instance ${adapterInstance} could not handle the notification for "${scopeId}.${categoryId}"`,
+                        `Instance ${adapterInstance} could not handle the notification for "${scopeId}.${categoryId}"`
                     );
                 }
             }
@@ -401,7 +405,7 @@ class NotificationManager extends utils.Adapter {
      * @param scopeOrCategory a notifications scope or category
      */
     private async localize<T extends Omit<NotificationScope, 'categories'> | NotificationCategory>(
-        scopeOrCategory: T,
+        scopeOrCategory: T
     ): Promise<T & { name: string; description: string }> {
         const config = await this.getForeignObjectAsync('system.config');
 

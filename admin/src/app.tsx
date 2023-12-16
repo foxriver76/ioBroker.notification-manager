@@ -8,7 +8,7 @@ import { StyleRules } from '@material-ui/core/styles';
 import { AdapterNative } from './components/settings';
 
 const styles = (_theme: Theme): StyleRules => ({
-    root: {},
+    root: {}
 });
 
 class App extends GenericApp {
@@ -27,8 +27,8 @@ class App extends GenericApp {
                 es: require('./i18n/es.json'),
                 pl: require('./i18n/pl.json'),
                 //uk: require('./i18n/uk.json'),
-                'zh-cn': require('./i18n/zh-cn.json'),
-            },
+                'zh-cn': require('./i18n/zh-cn.json')
+            }
         };
 
         super(props, extendedProps);

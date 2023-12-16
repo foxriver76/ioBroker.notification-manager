@@ -12,13 +12,13 @@ function build(): void {
         <MuiThemeProvider theme={theme(themeName)}>
             <App
                 adapterName="notification-manager"
-                onThemeChange={(_theme) => {
+                onThemeChange={_theme => {
                     themeName = _theme;
                     build();
                 }}
             />
         </MuiThemeProvider>,
-        document.getElementById('root'),
+        document.getElementById('root')
     );
 }
 

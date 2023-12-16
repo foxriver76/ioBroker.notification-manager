@@ -36,13 +36,17 @@ class NotificationManager extends utils.Adapter {
   async onMessage(obj) {
     switch (obj.command) {
       case "getCategories":
-        return this.handleGetCategoriesMessage(obj);
+        await this.handleGetCategoriesMessage(obj);
+        break;
       case "getSupportedMessengers":
-        return this.handleGetSupportedMessengersMessage(obj);
+        await this.handleGetSupportedMessengersMessage(obj);
+        break;
       case "sendTestMessage":
-        return this.handleSendTestMessageMessage(obj);
+        await this.handleSendTestMessageMessage(obj);
+        break;
       case "registerUserNotification":
-        return this.handleRegisterUserNotificationMessage(obj);
+        await this.handleRegisterUserNotificationMessage(obj);
+        break;
       default:
         this.log.warn(`Unsupported message received "${obj.command}"`);
     }

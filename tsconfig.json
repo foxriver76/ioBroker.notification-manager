@@ -8,9 +8,8 @@
         // the compilation is configured in tsconfig.build.json
         "noEmit": true,
 
-        // check JS files, but do not compile them => tsconfig.build.json
-        "allowJs": true,
-        "checkJs": true,
+        "allowJs": false,
+        "checkJs": false,
 
         "noEmitOnError": true,
         "outDir": "./build/",

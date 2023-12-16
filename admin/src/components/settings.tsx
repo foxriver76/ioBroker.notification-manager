@@ -30,47 +30,47 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 const styles = (): Record<string, CreateCSSProperties> => ({
     input: {
         marginTop: 0,
-        minWidth: 400,
+        minWidth: 400
     },
     button: {
-        marginRight: 20,
+        marginRight: 20
     },
     card: {
         textAlign: 'left',
-        margin: 10,
+        margin: 10
     },
     cardHeaderDark: {
         backgroundColor: '#272727',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     cardHeader: {
         backgroundColor: 'white',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     media: {
-        height: 180,
+        height: 180
     },
     column: {
         display: 'inline-block',
         verticalAlign: 'top',
-        marginRight: 20,
+        marginRight: 20
     },
     columnLogo: {
         width: 350,
-        marginRight: 0,
+        marginRight: 0
     },
     columnSettings: {
-        width: 'calc(100% - 370px)',
+        width: 'calc(100% - 370px)'
     },
     controlElement: {
-        marginBottom: 5,
+        marginBottom: 5
     },
     settingsRoot: {
         height: '100%',
         overflow: 'scroll',
-        marginLeft: '10px',
-    },
+        marginLeft: '10px'
+    }
 });
 
 interface ConfiguredAdapters {
@@ -170,16 +170,16 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     private readonly SEVERITY_MAPPING = {
         notify: {
             icon: faBell,
-            color: '#3399cc',
+            color: '#3399cc'
         },
         info: {
             icon: faInfoCircle,
-            color: '#3399cc',
+            color: '#3399cc'
         },
         alert: {
             icon: faWarning,
-            color: '#ff8f00',
-        },
+            color: '#ff8f00'
+        }
     } as const;
 
     /** Connection to the backend */
@@ -197,7 +197,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
                 value={this.props.native[attr]}
                 type={type || 'text'}
-                onChange={(e) => this.props.onChange(attr, e.target.value)}
+                onChange={e => this.props.onChange(attr, e.target.value)}
                 margin="normal"
             />
         );
@@ -215,7 +215,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         title: AdminWord,
         attr: ConfigurationCategoryAttribute,
         options: { value: string; title: string }[],
-        style?: React.CSSProperties,
+        style?: React.CSSProperties
     ): React.JSX.Element {
         const [severity, adapterOrder] = attr.split('.').slice(1);
         options.push({ value: '', title: I18n.t('selectAdapterInstance') });
@@ -225,17 +225,17 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
                 style={{
                     paddingTop: 5,
-                    ...style,
+                    ...style
                 }}
             >
                 <Select
                     value={this.props.native.fallback[severity][adapterOrder] || '_'}
-                    onChange={(e) => {
+                    onChange={e => {
                         this.props.onChange(attr, e.target.value === '_' ? '' : e.target.value);
                     }}
                     input={<Input name={attr} id={attr + '-helper'} />}
                 >
-                    {options.map((item) => (
+                    {options.map(item => (
                         <MenuItem key={'key-' + item.value} value={item.value || '_'}>
                             {item.title}
                         </MenuItem>
@@ -258,7 +258,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         title: AdminWord,
         attr: ConfigurationCategoryAttribute,
         options: { value: string; title: string }[],
-        style?: React.CSSProperties,
+        style?: React.CSSProperties
     ): React.JSX.Element {
         const [scope, category, adapterOrder] = attr.split('.');
         options.push({ value: '', title: I18n.t('selectAdapterInstance') });
@@ -268,18 +268,18 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
                 style={{
                     paddingTop: 5,
-                    ...style,
+                    ...style
                 }}
             >
                 <Select
                     value={this.props.native.categories[scope]?.[category]?.[adapterOrder] || '_'}
-                    onChange={(e) => {
+                    onChange={e => {
                         const val = this.preprocessAdapterSelection(attr, e.target.value === '_' ? '' : e.target.value);
                         this.props.onChange('categories', val);
                     }}
                     input={<Input name={attr} id={attr + '-helper'} />}
                 >
-                    {options.map((item) => (
+                    {options.map(item => (
                         <MenuItem key={'key-' + item.value} value={item.value || '_'}>
                             {item.title}
                         </MenuItem>
@@ -369,7 +369,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 key={attr}
                 style={{
                     paddingTop: 5,
-                    ...style,
+                    ...style
                 }}
                 className={this.props.classes.controlElement}
                 control={
@@ -378,7 +378,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                         onChange={(_event, checked) =>
                             this.props.onChange(
                                 'categories',
-                                this.preprocessAdapterActive({ scope, category, active: checked }),
+                                this.preprocessAdapterActive({ scope, category, active: checked })
                             )
                         }
                         color="primary"
@@ -416,19 +416,19 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 {this.renderCategoryAdapterSelect(
                     `firstAdapter`,
                     `${scope}.${category}.firstAdapter`,
-                    this.state.supportedAdapterInstances.map((instance) => {
+                    this.state.supportedAdapterInstances.map(instance => {
                         return { value: instance, title: instance };
                     }),
-                    {},
+                    {}
                 )}
                 <br />
                 {this.renderCategoryAdapterSelect(
                     'secondAdapter',
                     `${scope}.${category}.secondAdapter`,
-                    this.state.supportedAdapterInstances.map((instance) => {
+                    this.state.supportedAdapterInstances.map(instance => {
                         return { value: instance, title: instance };
                     }),
-                    {},
+                    {}
                 )}
             </div>
         );
@@ -471,7 +471,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
             <Card
                 sx={{
                     minWidth: 400,
-                    border: this.isDarkMode() ? '1px solid rgba(58,58,58,0.6)' : '1px solid rgba(211,211,211,0.6)',
+                    border: this.isDarkMode() ? '1px solid rgba(58,58,58,0.6)' : '1px solid rgba(211,211,211,0.6)'
                 }}
                 className={this.props.classes.card}
             >
@@ -488,8 +488,8 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     this.setState({
                                         cardOpen: {
                                             ...this.state.cardOpen,
-                                            [elementId]: !this.state.cardOpen[elementId],
-                                        },
+                                            [elementId]: !this.state.cardOpen[elementId]
+                                        }
                                     });
                                 }}
                                 aria-label="expand"
@@ -504,7 +504,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 <div
                     style={{
                         backgroundColor: this.isDarkMode() ? '#3b3b3b' : 'rgba(211,211,211,0.4)',
-                        display: 'flex',
+                        display: 'flex'
                     }}
                 >
                     <Collapse
@@ -520,7 +520,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     <br />
                                     {this.renderAdapterActiveCheckbox(
                                         'categoryActive',
-                                        `${scopeId}.${category.category}.active`,
+                                        `${scopeId}.${category.category}.active`
                                     )}
                                     <br />
                                     {this.renderCategoryAdapterSelects({ scope: scopeId, category: category.category })}
@@ -554,7 +554,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     async sendTestMessage(scopeId: string, category: NotificationCategory): Promise<void> {
         const res = await this.conn.sendTo(this.props.namespace, 'sendTestMessage', {
             scopeId,
-            category: category.category,
+            category: category.category
         });
 
         if (res.ack) {
@@ -588,13 +588,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     renderMainSettings(notificationsConfig: NotificationsConfig): React.JSX.Element {
         return (
             <form className={this.props.classes.tab}>
-                {notificationsConfig.map((scope) => {
+                {notificationsConfig.map(scope => {
                     return (
                         <div key={'settings-root'}>
                             <h2 style={{ color: this.getTextColor(), margin: 10 }} key={scope.scope}>
                                 {scope.name[this.props.language]}
                             </h2>
-                            {scope.categories.map((category) => {
+                            {scope.categories.map(category => {
                                 return this.renderCategoryCard(scope.scope, category);
                             })}
                         </div>
@@ -614,7 +614,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
             <div>
                 <h2 style={{ color: this.getTextColor() }}>{I18n.t('fallbackSettings')}</h2>
 
-                {severities.map((severity) => {
+                {severities.map(severity => {
                     return (
                         <Card
                             key={`${severity}-fallback-card`}
@@ -622,7 +622,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                 minWidth: 400,
                                 border: this.isDarkMode()
                                     ? '1px solid rgba(58,58,58,0.6)'
-                                    : '1px solid rgba(211,211,211,0.6)',
+                                    : '1px solid rgba(211,211,211,0.6)'
                             }}
                             className={this.props.classes.card}
                         >
@@ -638,13 +638,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                             <CardContent
                                 style={{
                                     backgroundColor: this.isDarkMode() ? '#3b3b3b' : 'rgba(211,211,211,0.4)',
-                                    display: 'flex',
+                                    display: 'flex'
                                 }}
                             >
                                 <Container
                                     sx={{
                                         lineHeight: 2,
-                                        color: this.getTextColor(),
+                                        color: this.getTextColor()
                                     }}
                                 >
                                     <div style={{ display: 'flex' }}>
@@ -653,19 +653,19 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                             {this.renderFallbackAdapterSelect(
                                                 `firstAdapter`,
                                                 `fallback.${severity}.firstAdapter`,
-                                                this.state.supportedAdapterInstances.map((instance) => {
+                                                this.state.supportedAdapterInstances.map(instance => {
                                                     return { value: instance, title: instance };
                                                 }),
-                                                {},
+                                                {}
                                             )}
                                             <br />
                                             {this.renderFallbackAdapterSelect(
                                                 'secondAdapter',
                                                 `fallback.${severity}.secondAdapter`,
-                                                this.state.supportedAdapterInstances.map((instance) => {
+                                                this.state.supportedAdapterInstances.map(instance => {
                                                     return { value: instance, title: instance };
                                                 }),
-                                                {},
+                                                {}
                                             )}
                                         </div>
                                     </div>
@@ -715,11 +715,11 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         try {
             const { notifications: notificationsConfig } = await this.conn.sendTo(
                 this.props.namespace,
-                'getCategories',
+                'getCategories'
             );
             const { instances: supportedAdapterInstances } = await this.conn.sendTo(
                 this.props.namespace,
-                'getSupportedMessengers',
+                'getSupportedMessengers'
             );
 
             this.setState({ notificationsConfig, supportedAdapterInstances });
