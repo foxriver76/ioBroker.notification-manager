@@ -307,6 +307,14 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 
         const categories: ConfiguredCategories = JSON.parse(JSON.stringify(this.props.native.categories));
 
+        if (!categories[scope]) {
+            categories[scope] = {};
+        }
+
+        if (!categories[scope][category]) {
+            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true, suppress: false };
+        }
+
         for (const [attrName, attr] of Object.entries(attributes)) {
             categories[scope][category][attrName] = attr;
         }

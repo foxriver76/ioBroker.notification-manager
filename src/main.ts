@@ -256,7 +256,7 @@ class NotificationManager extends utils.Adapter {
      */
     private async onStateChange(id: string, _state: ioBroker.State | null | undefined): Promise<void> {
         const hostName = id.split('.')[2];
-        this.log.info(`New notification on "${hostName}" detected`);
+        this.log.info(`Notification update on "${hostName}" detected`);
         await this.handleNotifications([`system.host.${hostName}`]);
     }
 
@@ -338,8 +338,8 @@ class NotificationManager extends utils.Adapter {
                     this.log.debug(`Suppress notification "${scopeId}.${categoryId}"`);
 
                     await this.sendToHostAsync(host, 'clearNotifications', {
-                        scopeFilter: scopeId,
-                        categoryFilter: categoryId
+                        scope: scopeId,
+                        category: categoryId
                     });
 
                     continue;
@@ -354,8 +354,7 @@ class NotificationManager extends utils.Adapter {
                 for (const configuredAdapter of [firstAdapter, secondAdapter]) {
                     const adapterInstance = configuredAdapter.main || configuredAdapter.fallback;
                     if (!adapterInstance) {
-                        // if first not configured but second, do nothing
-                        return;
+                        continue;
                     }
 
                     const bareScope: Omit<NotificationScope, 'categories'> = {
@@ -383,8 +382,8 @@ class NotificationManager extends utils.Adapter {
                             );
 
                             await this.sendToHostAsync(host, 'clearNotifications', {
-                                scopeFilter: scopeId,
-                                categoryFilter: categoryId
+                                scope: scopeId,
+                                category: categoryId
                             });
                             return;
                         }

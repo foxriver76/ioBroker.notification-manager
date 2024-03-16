@@ -120,7 +120,7 @@ class NotificationManager extends utils.Adapter {
   }
   async onStateChange(id, _state) {
     const hostName = id.split(".")[2];
-    this.log.info(`New notification on "${hostName}" detected`);
+    this.log.info(`Notification update on "${hostName}" detected`);
     await this.handleNotifications([`system.host.${hostName}`]);
   }
   async handleNotifications(hosts) {
@@ -166,6 +166,15 @@ class NotificationManager extends utils.Adapter {
           this.log.debug(`Skip notification "${scopeId}.${categoryId}" because user opted-out`);
           continue;
         }
+        const isSuppressed = this.isCategorySuppressed({ scopeId, categoryId });
+        if (isSuppressed) {
+          this.log.debug(`Suppress notification "${scopeId}.${categoryId}"`);
+          await this.sendToHostAsync(host, "clearNotifications", {
+            scope: scopeId,
+            category: categoryId
+          });
+          continue;
+        }
         const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
           scopeId,
           categoryId,
@@ -174,7 +183,7 @@ class NotificationManager extends utils.Adapter {
         for (const configuredAdapter of [firstAdapter, secondAdapter]) {
           const adapterInstance = configuredAdapter.main || configuredAdapter.fallback;
           if (!adapterInstance) {
-            return;
+            continue;
           }
           const bareScope = {
             name: scope.name,
@@ -195,8 +204,8 @@ class NotificationManager extends utils.Adapter {
                 `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
               );
               await this.sendToHostAsync(host, "clearNotifications", {
-                scopeFilter: scopeId,
-                categoryFilter: categoryId
+                scope: scopeId,
+                category: categoryId
               });
               return;
             }
@@ -216,6 +225,11 @@ class NotificationManager extends utils.Adapter {
     var _a, _b;
     const { scopeId, categoryId } = options;
     return ((_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.active) !== false;
+  }
+  isCategorySuppressed(options) {
+    var _a, _b;
+    const { scopeId, categoryId } = options;
+    return !!((_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.suppress);
   }
   async localize(scopeOrCategory) {
     const config = await this.getForeignObjectAsync("system.config");

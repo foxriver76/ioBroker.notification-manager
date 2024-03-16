@@ -107,6 +107,7 @@ if the messaging adapter was able to deliver the notification, else it should re
 ### **WORK IN PROGRESS**
 * (foxriver76) added possibility to suppress messages
 * (foxriver76) fixed issue that bottom of settings page is shown behind toolbar
+* (foxriver76) fixed issue that all notifications are cleared instead of only the handled one
 
 ### 1.0.0 (2023-12-08)
 * (foxriver76) added possibility to send custom messages
