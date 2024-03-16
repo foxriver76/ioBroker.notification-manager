@@ -332,6 +332,19 @@ class NotificationManager extends utils.Adapter {
                     continue;
                 }
 
+                const isSuppressed = this.isCategorySuppressed({ scopeId, categoryId });
+
+                if (isSuppressed) {
+                    this.log.debug(`Suppress notification "${scopeId}.${categoryId}"`);
+
+                    await this.sendToHostAsync(host, 'clearNotifications', {
+                        scopeFilter: scopeId,
+                        categoryFilter: categoryId
+                    });
+
+                    continue;
+                }
+
                 const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
                     scopeId,
                     categoryId,
@@ -397,6 +410,16 @@ class NotificationManager extends utils.Adapter {
     private isCategoryActive(options: CategoryActiveCheckOptions): boolean {
         const { scopeId, categoryId } = options;
         return this.config.categories[scopeId]?.[categoryId]?.active !== false;
+    }
+
+    /**
+     * Check if the category is suppressed and should be cleared
+     *
+     * @param options scope and category information
+     */
+    private isCategorySuppressed(options: CategoryActiveCheckOptions): boolean {
+        const { scopeId, categoryId } = options;
+        return !!this.config.categories[scopeId]?.[categoryId]?.suppress;
     }
 
     /**

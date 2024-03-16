@@ -9,5 +9,6 @@
     "fallbackSettings": "Ustawienia zastępcze",
     "severity": "Powaga",
     "categoryActive": "Kategoria aktywna",
-    "testMessage": "Wyślij wiadomość testową"
+    "testMessage": "Wyślij wiadomość testową",
+    "suppressCategory": "Pomijanie wiadomości dla tej kategorii"
 }

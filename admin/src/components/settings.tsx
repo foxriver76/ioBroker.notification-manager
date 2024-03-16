@@ -67,13 +67,15 @@ const styles = (): Record<string, CreateCSSProperties> => ({
         marginBottom: 5
     },
     settingsRoot: {
-        height: '100%',
+        height: 'calc(100% - 64px)',
         overflow: 'scroll',
         marginLeft: '10px'
     }
 });
 
 interface ConfiguredAdapters {
+    /** If the adapter should just clear the notification without any handling */
+    suppress: boolean;
     /** Try to first let this adapter handle the notification */
     firstAdapter: string;
     /** If first adapter fails, try this one */
@@ -121,6 +123,11 @@ interface ScopeWithCategory {
     category: string;
 }
 
+interface PreprocessAttributesOptions extends ScopeWithCategory {
+    /** The actual attributes to set */
+    [attribute: string]: unknown;
+}
+
 interface Notifications {
     /** the scope id */
     scope: string;
@@ -135,8 +142,8 @@ interface NotificationCategory {
     /** the category id */
     category: string;
     severity: Severity;
-    description: Record<string, string>;
-    name: Record<string, string>;
+    description: Record<ioBroker.Languages, string>;
+    name: Record<ioBroker.Languages, string>;
     limit: number;
     regex: RegExp[];
 }
@@ -291,6 +298,23 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     }
 
     /**
+     * Preprocess given attributes by setting them to the category object
+     *
+     * @param options scope, category and key-value pairs of the attributes
+     */
+    preprocessAttributes(options: PreprocessAttributesOptions): ConfiguredCategories {
+        const { scope, category, ...attributes } = options;
+
+        const categories: ConfiguredCategories = JSON.parse(JSON.stringify(this.props.native.categories));
+
+        for (const [attrName, attr] of Object.entries(attributes)) {
+            categories[scope][category][attrName] = attr;
+        }
+
+        return categories;
+    }
+
+    /**
      * Preprocess the category object if checkbox is checked
      * @param options the scope, category and activation options of the active adapter
      */
@@ -304,7 +328,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         }
 
         if (!categories[scope][category]) {
-            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true };
+            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true, suppress: false };
         }
 
         if (!active) {
@@ -316,8 +340,6 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 categories[scope][category].active = true;
             }
         }
-
-        console.log(categories);
 
         return categories;
     }
@@ -338,7 +360,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         }
 
         if (!categories[scope][category]) {
-            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true };
+            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true, suppress: false };
         }
 
         categories[scope][category][adapterOrder] = value;
@@ -401,13 +423,55 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     }
 
     /**
+     * Check if the given category is suppressed
+     *
+     * @param options scope and category config
+     */
+    private isCategorySuppressed(options: ScopeWithCategory): boolean {
+        const { scope, category } = options;
+
+        return !!this.props.native.categories[scope]?.[category]?.suppress;
+    }
+
+    /**
+     * Render the "suppress category" checkbox
+     * @param options scope and category information
+     */
+    private renderSuppressCategoryCheckbox(options: ScopeWithCategory): React.JSX.Element | null {
+        const { category, scope } = options;
+
+        if (!this.isCategoryActive({ scope, category })) {
+            return null;
+        }
+
+        return (
+            <FormControlLabel
+                className={this.props.classes.controlElement}
+                control={
+                    <Checkbox
+                        checked={this.props.native.categories[scope]?.[category]?.suppress}
+                        onChange={(_event, checked) =>
+                            this.props.onChange(
+                                'categories',
+                                this.preprocessAttributes({ scope, category, suppress: checked })
+                            )
+                        }
+                        color="primary"
+                    />
+                }
+                label={I18n.t('suppressCategory')}
+            />
+        );
+    }
+
+    /**
      * Render all adapter selections for given category
-     * @param options
+     * @param options scope and category information
      */
     private renderCategoryAdapterSelects(options: ScopeWithCategory): React.JSX.Element | null {
         const { scope, category } = options;
 
-        if (!this.isCategoryActive({ scope, category })) {
+        if (!this.isCategoryActive({ scope, category }) || this.isCategorySuppressed({ scope, category })) {
             return null;
         }
 
@@ -523,6 +587,10 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                         `${scopeId}.${category.category}.active`
                                     )}
                                     <br />
+                                    {this.renderSuppressCategoryCheckbox({
+                                        scope: scopeId,
+                                        category: category.category
+                                    })}
                                     {this.renderCategoryAdapterSelects({ scope: scopeId, category: category.category })}
                                 </Container>
                                 <div style={{ flex: 1, display: 'flex' }}> {this.renderIcon(category.severity)}</div>

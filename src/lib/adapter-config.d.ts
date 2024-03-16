@@ -11,6 +11,8 @@ interface ConfiguredAdapters {
 interface CategoryConfiguration extends ConfiguredAdapters {
     /** If category is active */
     active: boolean;
+    /** If category should be suppressed */
+    suppress: boolean;
 }
 
 type FallbackConfiguration = {

@@ -9,5 +9,6 @@
     "fallbackSettings": "Fallback-instellingen",
     "severity": "Ernst",
     "categoryActive": "Categorie actief",
-    "testMessage": "Stuur een testbericht"
+    "testMessage": "Stuur een testbericht",
+    "suppressCategory": "Berichten voor deze categorie onderdrukken"
 }

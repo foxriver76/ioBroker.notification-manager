@@ -9,5 +9,6 @@
     "fallbackSettings": "Paramètres de secours",
     "severity": "Gravité",
     "categoryActive": "Catégorie active",
-    "testMessage": "Envoyer un message test"
+    "testMessage": "Envoyer un message test",
+    "suppressCategory": "Supprimer les messages pour cette catégorie"
 }

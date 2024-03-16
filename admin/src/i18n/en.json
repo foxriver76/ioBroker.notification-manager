@@ -9,5 +9,6 @@
     "fallbackSettings": "Fallback settings",
     "severity": "Severity",
     "categoryActive": "Category active",
-    "testMessage": "Send test message"
+    "testMessage": "Send test message",
+    "suppressCategory": "Suppress messages for this category"
 }
