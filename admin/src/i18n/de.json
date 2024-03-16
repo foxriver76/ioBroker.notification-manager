@@ -9,5 +9,6 @@
     "fallbackSettings": "Fallback-Einstellungen",
     "severity": "Schweregrad",
     "categoryActive": "Kategorie aktiv",
-    "testMessage": "Testnachricht senden"
+    "testMessage": "Testnachricht senden",
+    "suppressCategory": "Nachrichten für diese Kategorie unterdrücken"
 }

@@ -9,5 +9,6 @@
     "fallbackSettings": "Configurações de fallback",
     "severity": "Gravidade",
     "categoryActive": "Categoria ativa",
-    "testMessage": "Enviar mensagem de teste"
+    "testMessage": "Enviar mensagem de teste",
+    "suppressCategory": "Suprimir mensagens para esta categoria"
 }

@@ -9,5 +9,6 @@
     "fallbackSettings": "Impostazioni di riserva",
     "severity": "Gravità",
     "categoryActive": "Categoria attiva",
-    "testMessage": "Invia messaggio di prova"
+    "testMessage": "Invia messaggio di prova",
+    "suppressCategory": "Sopprimere i messaggi per questa categoria"
 }
