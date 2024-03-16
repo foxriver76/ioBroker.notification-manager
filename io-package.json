@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "notification-manager",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "news": {
+      "1.1.0": {
+        "en": "added possibility to suppress messages\nfixed issue that bottom of settings page is shown behind toolbar\nfixed issue that all notifications are cleared instead of only the handled one",
+        "de": "möglichkeit, nachrichten zu unterdrücken\nfest problem, dass unten der einstellungen seite hinter der symbolleiste angezeigt wird\nfestes problem, dass alle benachrichtigungen gelöscht werden, anstatt nur die behandelte",
+        "ru": "добавленная возможность подавления сообщений\nфиксированная проблема, что внизу страницы настроек показано за панелью инструментов\nфиксированный вопрос о том, что все уведомления очистятся вместо только обработанного",
+        "pt": "possibilidade adicionada de suprimir mensagens\nproblema fixo que a parte inferior da página de configurações é mostrada atrás da barra de ferramentas\nproblema fixo que todas as notificações são compensadas em vez de apenas uma",
+        "nl": "toegevoegd mogelijkheid om berichten te onderdrukken\nvast probleem dat de onderkant van de instellingen pagina wordt weergegeven achter de werkbalk\nvast probleem dat alle meldingen worden gewist in plaats van alleen de afgehandelde",
+        "fr": "possibilité supplémentaire de supprimer les messages\nproblème corrigé que le bas de la page de paramètres est affiché derrière la barre d'outils\nproblème fixe que toutes les notifications sont effacées au lieu de la seule traitée",
+        "it": "possibilità aggiunta di sopprimere i messaggi\nproblema fisso che il fondo delle impostazioni pagina è mostrato dietro la barra degli strumenti\nproblema fisso che tutte le notifiche sono cancellate invece di solo quella gestita",
+        "es": "adicional posibilidad de suprimir mensajes\nedición fija que la parte inferior de la página de configuración se muestra detrás de la barra de herramientas\ncuestión fija de que todas las notificaciones se despejen en lugar de sólo el manejado",
+        "pl": "dodana możliwość tłumienia wiadomości\nstałe wydanie, że dół strony ustawień jest wyświetlany za paskiem narzędzi\nstała kwestia, że wszystkie powiadomienia są rozliczane zamiast tylko obsługiwane",
+        "uk": "можливість пригнічувати повідомлення\nвиправлено проблему, що дно сторінки налаштувань відображається за допомогою панелі інструментів\nвиправлено проблему, що всі повідомлення очищаються замість того, щоб впоратися один",
+        "zh-cn": "增加了压制信息的可能性\n设置页面底部显示在工具栏后面的固定问题\n固定问题,即所有通知都已清除,而不只是处理过的通知"
+      },
       "1.0.0": {
         "en": "added possibility to send custom messages\nadded UI indicators for each category",
         "de": "möglichkeit, benutzerdefinierte nachrichten zu senden\nuI-Indikatoren für jede Kategorie hinzugefügt",
@@ -104,7 +117,10 @@
       "messages"
     ],
     "tier": 2,
-    "license": "MIT",
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
     "platform": "Javascript/Node.js",
     "main": "build/main.js",
     "icon": "notification-manager.png",

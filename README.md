@@ -103,8 +103,7 @@ if the messaging adapter was able to deliver the notification, else it should re
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 1.1.0 (2024-03-16)
 * (foxriver76) added possibility to suppress messages
 * (foxriver76) fixed issue that bottom of settings page is shown behind toolbar
 * (foxriver76) fixed issue that all notifications are cleared instead of only the handled one
@@ -125,7 +124,7 @@ if the messaging adapter was able to deliver the notification, else it should re
 ## License
 MIT License
 
-Copyright (c) 2023 foxriver76 <moritz.heusinger@gmail.com>
+Copyright (c) 2024 foxriver76 <moritz.heusinger@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

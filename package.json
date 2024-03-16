@@ -1,6 +1,6 @@
 {
   "name": "iobroker.notification-manager",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Manage ioBroker notifications, e.g. by sending them as messages",
   "author": {
     "name": "foxriver76",
