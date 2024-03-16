@@ -1,6 +1,6 @@
 {
   "name": "iobroker.notification-manager",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Manage ioBroker notifications, e.g. by sending them as messages",
   "author": {
     "name": "foxriver76",
@@ -35,7 +35,7 @@
     "@iobroker/adapter-dev": "^1.2.0",
     "@iobroker/adapter-react-v5": "^4.0.25",
     "@iobroker/socket-client": "^2.0.7",
-    "@iobroker/testing": "^4.1.0",
+    "@iobroker/testing": "^4.1.1",
     "@material-ui/core": "^4.12.4",
     "@mui/lab": "^5.0.0-alpha.129",
     "@tsconfig/node16": "^1.0.3",
