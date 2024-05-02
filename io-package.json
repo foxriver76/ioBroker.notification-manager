@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "notification-manager",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "news": {
+      "1.1.2": {
+        "en": "made logging a bit more silent",
+        "de": "ein bisschen mehr still",
+        "ru": "сделать заготовку немного более безмолвной",
+        "pt": "fez login um pouco mais silencioso",
+        "nl": "het loggen wat stiller heeft gemaakt",
+        "fr": "rendre la session un peu plus silencieuse",
+        "it": "fatto scavare un po' più silenzioso",
+        "es": "made logging a bit more silent",
+        "pl": "sprawia, że logowanie trochę ciszej",
+        "uk": "зробив запис трохи більше мовчазних",
+        "zh-cn": "使记录更加安静"
+      },
       "1.1.1": {
         "en": "added possibility to suppress messages\nfixed issue that bottom of settings page is shown behind toolbar\nfixed issue that all notifications are cleared instead of only the handled one",
         "de": "möglichkeit, nachrichten zu unterdrücken\nfest problem, dass unten der einstellungen seite hinter der symbolleiste angezeigt wird\nfestes problem, dass alle benachrichtigungen gelöscht werden, anstatt nur die behandelte",
@@ -80,19 +93,6 @@
         "pl": "pierwsze wydanie",
         "uk": "початковий реліз",
         "zh-cn": "初步释放"
-      },
-      "0.0.1": {
-        "en": "initial release",
-        "de": "Erstveröffentlichung",
-        "ru": "Начальная версия",
-        "pt": "lançamento inicial",
-        "nl": "Eerste uitgave",
-        "fr": "Première version",
-        "it": "Versione iniziale",
-        "es": "Versión inicial",
-        "pl": "Pierwsze wydanie",
-        "uk": "Початкова версія",
-        "zh-cn": "首次出版"
       }
     },
     "title": "Notification Manager",
