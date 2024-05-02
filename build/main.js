@@ -120,7 +120,7 @@ class NotificationManager extends utils.Adapter {
   }
   async onStateChange(id, _state) {
     const hostName = id.split(".")[2];
-    this.log.info(`Notification update on "${hostName}" detected`);
+    this.log.debug(`Notification update on "${hostName}" detected`);
     await this.handleNotifications([`system.host.${hostName}`]);
   }
   async handleNotifications(hosts) {

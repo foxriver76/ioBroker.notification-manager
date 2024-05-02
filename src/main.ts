@@ -256,7 +256,7 @@ class NotificationManager extends utils.Adapter {
      */
     private async onStateChange(id: string, _state: ioBroker.State | null | undefined): Promise<void> {
         const hostName = id.split('.')[2];
-        this.log.info(`Notification update on "${hostName}" detected`);
+        this.log.debug(`Notification update on "${hostName}" detected`);
         await this.handleNotifications([`system.host.${hostName}`]);
     }
 
