@@ -146,6 +146,7 @@
     "compact": true,
     "connectionType": "local",
     "dataSource": "push",
+    "blockly": true,
     "messagebox": true,
     "adminUI": {
       "config": "materialize"
