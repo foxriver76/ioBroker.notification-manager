@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "notification-manager",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "news": {
+      "1.2.0": {
+        "en": "(@klein0r) Added Blockly blocks",
+        "de": "(@klein0r) Blockierte Blöcke hinzugefügt",
+        "ru": "(@klein0r) Добавленные блоки",
+        "pt": "(@klein0r) Adicionado blocos Blockly",
+        "nl": "(@klein0r) Blockly blokken toegevoegd",
+        "fr": "(@klein0r) Ajout de blocs Blockly",
+        "it": "(@klein0r) Aggiunto Blockly blocchi",
+        "es": "(@klein0r) Bloques bloqueados",
+        "pl": "(@ klein0r) Dodano blokadę",
+        "uk": "(@klein0r) Додано блокноти",
+        "zh-cn": "(@klein0r) (韩语). 添加块块"
+      },
       "1.1.2": {
         "en": "made logging a bit more silent",
         "de": "ein bisschen mehr still",
@@ -80,19 +93,6 @@
         "pl": "dodano możliwość przesyłania wiadomości z interfejsu internetowego (zawiera 1)",
         "uk": "можливість надсилати тестові повідомлення з веб-інтерфейсу (закриває #1)",
         "zh-cn": "网络界传送试验信息的可能性(编号:#1)"
-      },
-      "0.1.0": {
-        "en": "initial release",
-        "de": "erstausstrahlung",
-        "ru": "начальный выпуск",
-        "pt": "lançamento inicial",
-        "nl": "niet",
-        "fr": "initial release",
-        "it": "rilascio iniziale",
-        "es": "liberación inicial",
-        "pl": "pierwsze wydanie",
-        "uk": "початковий реліз",
-        "zh-cn": "初步释放"
       }
     },
     "title": "Notification Manager",
