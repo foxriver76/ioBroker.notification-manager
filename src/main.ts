@@ -5,7 +5,7 @@ interface GetNotificationsResponse {
     result: NotificationsObject;
 }
 
-type HostId = `system.host.${string}`;
+type HostId = ioBroker.ObjectIDs.Host;
 
 type Severity = 'alert' | 'info' | 'notify';
 
@@ -167,7 +167,6 @@ class NotificationManager extends utils.Adapter {
             );
         }
 
-        // @ts-expect-error js-controller types are restricted to "system" here, should be fixed soon
         await this.registerNotification(this.USER_SCOPE, category, message);
         this.sendTo(obj.from, obj.command, { success: true }, obj.callback);
     }
@@ -255,9 +254,21 @@ class NotificationManager extends utils.Adapter {
      * Is called if a subscribed state changes
      */
     private async onStateChange(id: string, _state: ioBroker.State | null | undefined): Promise<void> {
-        const hostName = id.split('.')[2];
-        this.log.debug(`Notification update on "${hostName}" detected`);
-        await this.handleNotifications([`system.host.${hostName}`]);
+        const hostId = this.extractHostFromId(id);
+        this.log.debug(`Notification update on "${hostId}" detected`);
+        await this.handleNotifications([hostId]);
+    }
+
+    /**
+     * Extract the hostname from a `system.host.hostPart1.maybeHostPart2.maybeHostPartX.notifications.category` id
+     *
+     * @param id id with structure `system.host.hostPart1.maybeHostPart2.maybeHostPartX.notifications.category`
+     */
+    private extractHostFromId(id: string): HostId {
+        const notificationsId = id.substring(0, id.lastIndexOf('.'));
+        const hostId = id.substring(0, notificationsId.lastIndexOf('.'));
+
+        return hostId as HostId;
     }
 
     /**

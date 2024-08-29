@@ -103,6 +103,10 @@ if the messaging adapter was able to deliver the notification, else it should re
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+* (@foxriver76) fixed issue if host name contains `.`
+
 ### 1.2.0 (2024-08-05)
 * (@klein0r) Added Blockly blocks
 

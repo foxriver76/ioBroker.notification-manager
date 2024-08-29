@@ -119,9 +119,14 @@ class NotificationManager extends utils.Adapter {
     callback();
   }
   async onStateChange(id, _state) {
-    const hostName = id.split(".")[2];
-    this.log.debug(`Notification update on "${hostName}" detected`);
-    await this.handleNotifications([`system.host.${hostName}`]);
+    const hostId = this.extractHostFromId(id);
+    this.log.debug(`Notification update on "${hostId}" detected`);
+    await this.handleNotifications([hostId]);
+  }
+  extractHostFromId(id) {
+    const notificationsId = id.substring(0, id.lastIndexOf("."));
+    const hostId = id.substring(0, notificationsId.lastIndexOf("."));
+    return hostId;
   }
   async handleNotifications(hosts) {
     hosts = hosts || await this.getAllHosts();
