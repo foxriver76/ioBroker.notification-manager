@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "notification-manager",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "news": {
+      "1.2.1": {
+        "en": "fixed issue if host name contains `.`",
+        "de": "feste ausgabe, wenn hostname ` enthält. `",
+        "ru": "фиксированная проблема, если имя хоста содержит `. \"",
+        "pt": "problema fixo se o nome do host contém `. \"",
+        "nl": "fixed issue als hostnaam bevat. wat",
+        "fr": "problème corrigé si le nom de l'hôte contient `. \"",
+        "it": "problema fisso se il nome host contiene `. #",
+        "es": "cuestión fija si el nombre de host contiene `. `",
+        "pl": "stałe wydanie, jeśli nazwa hosta zawiera \". '",
+        "uk": "виправлено проблему, якщо ім'я хосту містить `. й",
+        "zh-cn": "如果主机名称包含“ ” , 则为固定期。 `"
+      },
       "1.2.0": {
         "en": "(@klein0r) Added Blockly blocks",
         "de": "(@klein0r) Blockierte Blöcke hinzugefügt",
@@ -80,19 +93,6 @@
         "pl": "wykazuje również powiadomienia dostarczone przez adapterów w konfiguracji",
         "uk": "також показати повідомлення, що надаються адаптерами в конфігурації",
         "zh-cn": "组合的适应者也发出通知"
-      },
-      "0.1.1": {
-        "en": "added possibility to send test messages from web interface (closes #1)",
-        "de": "zusätzliche möglichkeit, testnachrichten von der web-schnittstelle zu senden (schließt #1)",
-        "ru": "добавлена возможность отправки тестовых сообщений из веб-интерфейса (closes #1)",
-        "pt": "possibilidade adicionada de enviar mensagens de teste da interface web (fecha #1)",
-        "nl": "toegevoegd de mogelijkheid om test berichten te sturen van web interface (closes)",
-        "fr": "possibilité supplémentaire d'envoyer des messages de test depuis l'interface web (ferme #1)",
-        "it": "possibilità aggiunta di inviare messaggi di prova dall'interfaccia web (chiude #1)",
-        "es": "añadido posibilidad de enviar mensajes de prueba desde la interfaz web (closes #1)",
-        "pl": "dodano możliwość przesyłania wiadomości z interfejsu internetowego (zawiera 1)",
-        "uk": "можливість надсилати тестові повідомлення з веб-інтерфейсу (закриває #1)",
-        "zh-cn": "网络界传送试验信息的可能性(编号:#1)"
       }
     },
     "title": "Notification Manager",
