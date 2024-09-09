@@ -1,6 +1,7 @@
 {
   "name": "iobroker.notification-manager",
   "version": "1.2.1",
+  "type": "commonjs",
   "description": "Manage ioBroker notifications, e.g. by sending them as messages",
   "author": {
     "name": "foxriver76",
@@ -31,14 +32,15 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@foxriver76/eslint-config": "^1.0.2",
     "@iobroker/adapter-dev": "^1.2.0",
-    "@iobroker/adapter-react-v5": "^4.0.25",
-    "@iobroker/socket-client": "^2.0.7",
+    "@iobroker/adapter-react-v5": "^7.0.1",
+    "@iobroker/eslint-config": "^0.1.2",
+    "@iobroker/socket-client": "^2.4.18",
     "@iobroker/testing": "^4.1.3",
     "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^6.0.2",
     "@mui/lab": "^5.0.0-alpha.129",
-    "@tsconfig/node16": "^1.0.3",
+    "@tsconfig/node20": "^20.1.4",
     "@types/chai": "^4.3.5",
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^10.0.1",
@@ -50,7 +52,7 @@
     "@types/sinon-chai": "^3.2.9",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
-    "eslint-plugin-react": "^7.32.2",
+    "eslint": "^9.10.0",
     "mocha": "^10.2.0",
     "proxyquire": "^2.1.3",
     "react": "^17.0.2",
@@ -60,7 +62,7 @@
     "sinon-chai": "^3.7.0",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.1",
-    "typescript": "~4.6.4"
+    "typescript": "~5.5.4"
   },
   "main": "build/main.js",
   "files": [
