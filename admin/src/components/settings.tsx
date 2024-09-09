@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
+import type { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -11,7 +11,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Button, Tab } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { I18n } from '@iobroker/adapter-react-v5';
+// @ts-expect-error socket-client also has a cjs export
 import { Connection } from '@iobroker/socket-client';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -19,8 +20,10 @@ import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import {
+    KeyboardArrowUp as KeyboardArrowUpIcon,
+    KeyboardArrowDown as KeyboardArrowDownIcon
+} from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWarning } from '@fortawesome/free-solid-svg-icons/faWarning';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
@@ -102,8 +105,11 @@ type FallbackConfiguration = {
     [key in Severity]: ConfiguredAdapters;
 };
 
+/** The adapter native attribute */
 export interface AdapterNative {
+    /** Configured notification categories */
     categories: ConfiguredCategories;
+    /** Fallback adapters per Severity */
     fallback: FallbackConfiguration;
 }
 
@@ -156,7 +162,7 @@ interface SettingsProps {
     /** the adapter namespace */
     namespace: string;
     /** the active language */
-    language: string;
+    language: ioBroker.Languages;
     /** the active theme */
     theme: 'dark' | 'light';
 }
@@ -324,6 +330,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 
     /**
      * Preprocess the category object if checkbox is checked
+     *
      * @param options the scope, category and activation options of the active adapter
      */
     preprocessAdapterActive(options: ActiveAdapterOptions): ConfiguredCategories {
@@ -443,6 +450,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 
     /**
      * Render the "suppress category" checkbox
+     *
      * @param options scope and category information
      */
     private renderSuppressCategoryCheckbox(options: ScopeWithCategory): React.JSX.Element | null {
@@ -474,6 +482,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 
     /**
      * Render all adapter selections for given category
+     *
      * @param options scope and category information
      */
     private renderCategoryAdapterSelects(options: ScopeWithCategory): React.JSX.Element | null {
@@ -767,10 +776,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         return (
             <div style={{}} className={this.props.classes.settingsRoot}>
                 <TabContext value={this.state.selectedTab}>
-                    <TabList
-                        value={this.state.selectedTab}
-                        onChange={(_event, value) => this.setState({ selectedTab: value })}
-                    >
+                    <TabList onChange={(_event, value) => this.setState({ selectedTab: value })}>
                         <Tab label={I18n.t('mainSettings')} value={'0'} />
                         <Tab label={I18n.t('additionalSettings')} value={'1'} />
                     </TabList>

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Theme, withStyles } from '@material-ui/core/styles';
+import type { Theme } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import GenericApp from '@iobroker/adapter-react-v5/GenericApp';
+import { GenericApp } from '@iobroker/adapter-react-v5';
 import Settings from './components/settings';
-import { GenericAppProps, GenericAppSettings } from '@iobroker/adapter-react-v5/types';
-import { StyleRules } from '@material-ui/core/styles';
-import { AdapterNative } from './components/settings';
+import type { GenericAppProps, GenericAppSettings } from '@iobroker/adapter-react-v5/types';
+import type { StyleRules } from '@material-ui/core/styles';
+import type { AdapterNative } from './components/settings';
 
 const styles = (_theme: Theme): StyleRules => ({
     root: {}
@@ -17,6 +18,7 @@ class App extends GenericApp {
             ...props,
             encryptedFields: [],
             translations: {
+                /* eslint-disable @typescript-eslint/no-require-imports */
                 en: require('./i18n/en.json'),
                 de: require('./i18n/de.json'),
                 ru: require('./i18n/ru.json'),
@@ -28,6 +30,7 @@ class App extends GenericApp {
                 pl: require('./i18n/pl.json'),
                 //uk: require('./i18n/uk.json'),
                 'zh-cn': require('./i18n/zh-cn.json')
+                /* eslint-enable @typescript-eslint/no-require-imports */
             }
         };
 
@@ -49,7 +52,7 @@ class App extends GenericApp {
                     native={this.state.native as AdapterNative}
                     onChange={(attr, value) => this.updateNativeValue(attr, value)}
                     namespace={`${this.adapterName}.${this.instance}`}
-                    language={this._systemConfig.language}
+                    language={this._systemConfig?.language ?? 'en'}
                     theme={this.state.themeType as 'dark' | 'light'}
                 />
                 {this.renderError()}
