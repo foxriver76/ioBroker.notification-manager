@@ -43,7 +43,7 @@ class NotificationManager extends utils.Adapter {
   /**
    * Listen to messages from frontend
    *
-   * @param obj
+   * @param obj the message object
    */
   async onMessage(obj) {
     switch (obj.command) {
@@ -153,7 +153,7 @@ class NotificationManager extends utils.Adapter {
   /**
    * Is called when adapter shuts down - callback has to be called under any circumstances!
    *
-   * @param callback
+   * @param callback callback which has to be called after unload handling has finished
    */
   onUnload(callback) {
     callback();
@@ -161,8 +161,8 @@ class NotificationManager extends utils.Adapter {
   /**
    * Is called if a subscribed state changes
    *
-   * @param id
-   * @param _state
+   * @param id id of the changed state
+   * @param _state the ioBroker state that has changed
    */
   async onStateChange(id, _state) {
     const hostId = this.extractHostFromId(id);
