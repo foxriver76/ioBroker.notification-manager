@@ -1,14 +1,16 @@
 {
-    "notification-manager adapter settings": "Налаштування адаптера для notification-manager",
-    "firstAdapter": "Перший адаптер",
-    "secondAdapter": "Другий адаптер",
-    "notRunning": "Спочатку запустіть адаптер!",
-    "selectAdapterInstance": "Виберіть екземпляр",
-    "mainSettings": "Основні налаштування",
-    "additionalSettings": "Додаткові налаштування",
-    "fallbackSettings": "Резервні налаштування",
-    "severity": "Суворість",
-    "categoryActive": "Категорія активна",
-    "testMessage": "Надіслати тестове повідомлення",
-    "suppressCategory": "Заборонити повідомлення для цієї категорії"
+  "The second adapter is used if the first adapter is not able to process the message.": "Другий адаптер використовується, якщо перший адаптер не може обробити повідомлення.",
+  "additionalSettings": "Додаткові налаштування",
+  "categoryActive": "Категорія активна",
+  "deleteWithContextData": "Також видаляйте сповіщення, коли контекстні дані доступні для подальшої взаємодії",
+  "fallbackSettings": "Резервні налаштування",
+  "firstAdapter": "Перший адаптер",
+  "mainSettings": "Основні налаштування",
+  "notRunning": "Спочатку запустіть адаптер!",
+  "notification-manager adapter settings": "Налаштування адаптера для notification-manager",
+  "secondAdapter": "Другий адаптер",
+  "selectAdapterInstance": "Виберіть екземпляр",
+  "severity": "Суворість",
+  "suppressCategory": "Заборонити повідомлення для цієї категорії",
+  "testMessage": "Надіслати тестове повідомлення"
 }

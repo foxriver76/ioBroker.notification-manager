@@ -12,9 +12,8 @@ Blockly.Translate =
         lang = lang || systemLang;
         if (Blockly.Words && Blockly.Words[word]) {
             return Blockly.Words[word][lang] || Blockly.Words[word].en;
-        } else {
-            return word;
         }
+        return word;
     };
 
 // --- SendTo Notification Manager --------------------------------------------------
@@ -29,7 +28,7 @@ Blockly.Words['notification-manager'] = {
     es: 'Administrador de notificaciones',
     pl: 'Menedżer powiadomień',
     uk: 'Менеджер сповіщень',
-    'zh-cn': '通知管理器'
+    'zh-cn': '通知管理器',
 };
 Blockly.Words['notification-manager_message'] = {
     en: 'Message text',
@@ -42,7 +41,7 @@ Blockly.Words['notification-manager_message'] = {
     es: 'Texto del mensaje',
     pl: 'Tekst wiadomości',
     uk: 'Текст повідомлення',
-    'zh-cn': '信件文本'
+    'zh-cn': '信件文本',
 };
 Blockly.Words['notification-manager_category'] = {
     en: 'Category',
@@ -55,7 +54,7 @@ Blockly.Words['notification-manager_category'] = {
     es: 'Categoría',
     pl: 'Kategoria',
     uk: 'Категорії',
-    'zh-cn': '类别'
+    'zh-cn': '类别',
 };
 Blockly.Words['notification-manager_anyInstance'] = {
     en: 'All instances',
@@ -68,7 +67,7 @@ Blockly.Words['notification-manager_anyInstance'] = {
     es: 'Todas las instancias',
     pl: 'Wszystkie instancje',
     uk: 'Всі екземпляри',
-    'zh-cn': '所有案件'
+    'zh-cn': '所有案件',
 };
 Blockly.Words['notification-manager_informal'] = {
     en: 'Informal',
@@ -81,7 +80,7 @@ Blockly.Words['notification-manager_informal'] = {
     es: 'Consultas oficiosas',
     pl: 'Nieformalne',
     uk: 'Неформатний',
-    'zh-cn': '非正式'
+    'zh-cn': '非正式',
 };
 Blockly.Words['notification-manager_info'] = {
     en: 'Important',
@@ -94,7 +93,7 @@ Blockly.Words['notification-manager_info'] = {
     es: 'Importante',
     pl: 'Ważne',
     uk: 'Головна',
-    'zh-cn': '重要'
+    'zh-cn': '重要',
 };
 Blockly.Words['notification-manager_alert'] = {
     en: 'Alarming',
@@ -107,11 +106,11 @@ Blockly.Words['notification-manager_alert'] = {
     es: 'Alarma',
     pl: 'Alarm',
     uk: 'Розведення',
-    'zh-cn': '警报'
+    'zh-cn': '警报',
 };
 Blockly.Words['notification-manager_help'] = {
     en: 'https://github.com/foxriver76/ioBroker.notification-manager/blob/main/README.md',
-    de: 'https://github.com/foxriver76/ioBroker.notification-manager/blob/main/README.md'
+    de: 'https://github.com/foxriver76/ioBroker.notification-manager/blob/main/README.md',
 };
 
 Blockly.Sendto.blocks['notification-manager'] =
@@ -134,14 +133,14 @@ Blockly.Blocks['notification-manager'] = {
                 const m = main.instances[i].match(/^system.adapter.notification-manager.(\d+)$/);
                 if (m) {
                     const n = parseInt(m[1], 10);
-                    options.push(['notification-manager.' + n, '.' + n]);
+                    options.push([`notification-manager.${n}`, `.${n}`]);
                 }
             }
         }
 
         if (!options.length) {
             for (let k = 0; k <= 4; k++) {
-                options.push(['notification-manager.' + k, '.' + k]);
+                options.push([`notification-manager.${k}`, `.${k}`]);
             }
         }
 
@@ -159,9 +158,9 @@ Blockly.Blocks['notification-manager'] = {
                 new Blockly.FieldDropdown([
                     [Blockly.Translate('notification-manager_informal'), 'notify'],
                     [Blockly.Translate('notification-manager_info'), 'info'],
-                    [Blockly.Translate('notification-manager_alert'), 'alert']
+                    [Blockly.Translate('notification-manager_alert'), 'alert'],
                 ]),
-                'CATEGORY'
+                'CATEGORY',
             );
 
         this.setInputsInline(false);
@@ -170,7 +169,7 @@ Blockly.Blocks['notification-manager'] = {
 
         this.setColour(Blockly.Sendto.HUE);
         this.setHelpUrl(Blockly.Translate('notification-manager_help'));
-    }
+    },
 };
 
 Blockly.JavaScript['notification-manager'] = function (block) {

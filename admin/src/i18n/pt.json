@@ -1,14 +1,16 @@
 {
-    "notification-manager adapter settings": "Configurações do adaptador para notification-manager",
-    "firstAdapter": "primeiro adaptador",
-    "secondAdapter": "Segundo adaptador",
-    "notRunning": "Inicie o adaptador primeiro!",
-    "selectAdapterInstance": "Selecionar instância",
-    "mainSettings": "Configurações principais",
-    "additionalSettings": "Configurações adicionais",
-    "fallbackSettings": "Configurações de fallback",
-    "severity": "Gravidade",
-    "categoryActive": "Categoria ativa",
-    "testMessage": "Enviar mensagem de teste",
-    "suppressCategory": "Suprimir mensagens para esta categoria"
+  "The second adapter is used if the first adapter is not able to process the message.": "O segundo adaptador é usado se o primeiro não for capaz de processar a mensagem.",
+  "additionalSettings": "Configurações adicionais",
+  "categoryActive": "Categoria ativa",
+  "deleteWithContextData": "Exclua também notificações quando dados contextuais estiverem disponíveis para interação adicional",
+  "fallbackSettings": "Configurações de fallback",
+  "firstAdapter": "primeiro adaptador",
+  "mainSettings": "Configurações principais",
+  "notRunning": "Inicie o adaptador primeiro!",
+  "notification-manager adapter settings": "Configurações do adaptador para notification-manager",
+  "secondAdapter": "Segundo adaptador",
+  "selectAdapterInstance": "Selecionar instância",
+  "severity": "Gravidade",
+  "suppressCategory": "Suprimir mensagens para esta categoria",
+  "testMessage": "Enviar mensagem de teste"
 }

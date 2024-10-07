@@ -13,6 +13,8 @@ interface CategoryConfiguration extends ConfiguredAdapters {
     active: boolean;
     /** If category should be suppressed */
     suppress: boolean;
+    /** If the adapter should delete the notification even if context data is available */
+    deleteWithContextData: boolean;
 }
 
 type FallbackConfiguration = {

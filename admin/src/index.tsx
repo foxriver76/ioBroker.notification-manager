@@ -18,7 +18,7 @@ function build(): void {
                 }}
             />
         </MuiThemeProvider>,
-        document.getElementById('root')
+        document.getElementById('root'),
     );
 }
 
