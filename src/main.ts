@@ -51,6 +51,7 @@ interface NotificationsObject {
 interface NotificationInstanceMessage {
     message: string;
     ts: number;
+    contextData?: Record<string, unknown>;
 }
 
 interface SendNotificationsOptions {
@@ -74,6 +75,11 @@ interface CategoryActiveCheckOptions {
     scopeId: string;
     /** id of the category */
     categoryId: string;
+}
+
+interface CacheCheckOptions extends CategoryActiveCheckOptions {
+    /** The notification category */
+    category: NotificationCategory;
 }
 
 interface ResponsibleInstances {
@@ -100,6 +106,15 @@ interface LocalizedNotification {
     category: LocalizedNotificationCategory;
 }
 
+interface CachedEntry {
+    /** Scope of the already sent entry */
+    scopeId: string;
+    /** Category of the already sent entry */
+    categoryId: string;
+    /** Timestamp of the already sent entry */
+    ts: number;
+}
+
 class NotificationManager extends utils.Adapter {
     /** Timeout to wait for response by instances on sendTo */
     private readonly SEND_TO_TIMEOUT = 5_000;
@@ -107,6 +122,8 @@ class NotificationManager extends utils.Adapter {
     private readonly SUPPORTED_USER_CATEGORIES = ['notify', 'info', 'alert'] as const;
     /** The scope used for messages sent by the user */
     private readonly USER_SCOPE = 'user';
+    /** Delete cache of already sent notifications after 30 days */
+    private readonly CACHE_DELETION_TIME = 30 * 86_400_000;
 
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({
@@ -363,6 +380,15 @@ class NotificationManager extends utils.Adapter {
                     continue;
                 }
 
+                const isCached = await this.isNotificationCached({ scopeId, categoryId, category });
+
+                if (isCached) {
+                    this.log.debug(
+                        `Skip notification for scope "${scopeId}" and category "${categoryId}", because already sent`,
+                    );
+                    return;
+                }
+
                 const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
                     scopeId,
                     categoryId,
@@ -399,10 +425,23 @@ class NotificationManager extends utils.Adapter {
                                 `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`,
                             );
 
-                            await this.sendToHostAsync(host, 'clearNotifications', {
-                                scope: scopeId,
-                                category: categoryId,
-                            });
+                            const deleteWithContextData = this.shouldDeleteWithContextData({ scopeId, categoryId });
+
+                            const hasContextData = this.hasContextData(category);
+
+                            if (!hasContextData || deleteWithContextData) {
+                                await this.sendToHostAsync(host, 'clearNotifications', {
+                                    scope: scopeId,
+                                    category: categoryId,
+                                });
+                                return;
+                            }
+
+                            if (hasContextData) {
+                                await this.cacheNotification({ scopeId, categoryId, category });
+                                await this.updateCache();
+                            }
+
                             return;
                         }
                     } catch (e: any) {
@@ -420,6 +459,77 @@ class NotificationManager extends utils.Adapter {
     }
 
     /**
+     * Add the given notification to the cache
+     *
+     * @param options category and scope information
+     */
+    private async cacheNotification(options: CacheCheckOptions): Promise<void> {
+        const { scopeId, categoryId, category } = options;
+
+        // take the ts any message
+        const ts = Object.values(category.instances)[0].messages[0].ts;
+
+        const cacheState = (await this.getStateAsync('cache'))?.val;
+        let cache: CachedEntry[] = [];
+
+        if (typeof cacheState === 'string') {
+            cache = JSON.parse(cacheState);
+        }
+
+        cache.push({ scopeId, categoryId, ts });
+
+        await this.setState('cache', JSON.stringify(cache), true);
+    }
+
+    /**
+     * Clear old data from cache to prevent growing too large
+     * This has the side effect that every `CACHE_DELETION_TIME` the message can be sent again if user hasn't interacted with it until then
+     */
+    private async updateCache(): Promise<void> {
+        const cacheState = (await this.getStateAsync('cache'))?.val;
+        let cache: CachedEntry[] = [];
+
+        if (typeof cacheState === 'string') {
+            cache = JSON.parse(cacheState);
+        }
+
+        cache = cache.filter(cachedEntry => cachedEntry.ts > Date.now() - this.CACHE_DELETION_TIME);
+        await this.setState('cache', JSON.stringify(cache), true);
+    }
+
+    /**
+     * Check if given notification is cached
+     *
+     * @param options scope and category information
+     */
+    private async isNotificationCached(options: CacheCheckOptions): Promise<boolean> {
+        const { scopeId, category, categoryId } = options;
+
+        const cacheState = (await this.getStateAsync('cache'))?.val;
+        let cache: CachedEntry[] = [];
+
+        if (typeof cacheState === 'string') {
+            cache = JSON.parse(cacheState);
+        }
+
+        for (const cachedEntry of cache) {
+            if (cachedEntry.scopeId !== scopeId || cachedEntry.categoryId !== categoryId) {
+                continue;
+            }
+
+            const alreadySent = Object.values(category.instances).some(instance =>
+                instance.messages.some(message => message.ts === cachedEntry.ts),
+            );
+
+            if (alreadySent) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check if the category is active or opted out by the user
      *
      * @param options scope and category information
@@ -430,6 +540,17 @@ class NotificationManager extends utils.Adapter {
     }
 
     /**
+     * Check if category has contextData
+     *
+     * @param category the category to check for contextData
+     */
+    private hasContextData(category: NotificationCategory): boolean {
+        return Object.values(category.instances).some(instance =>
+            instance.messages.some(message => !!message.contextData),
+        );
+    }
+
+    /**
      * Check if the category is suppressed and should be cleared
      *
      * @param options scope and category information
@@ -437,6 +558,17 @@ class NotificationManager extends utils.Adapter {
     private isCategorySuppressed(options: CategoryActiveCheckOptions): boolean {
         const { scopeId, categoryId } = options;
         return !!this.config.categories[scopeId]?.[categoryId]?.suppress;
+    }
+
+    /**
+     * Check if we should clear notification for this category also if it has contextData present
+     *
+     * @param options scope and category information
+     */
+    private shouldDeleteWithContextData(options: CategoryActiveCheckOptions): boolean {
+        const { scopeId, categoryId } = options;
+
+        return !!this.config.categories[scopeId]?.[categoryId]?.deleteWithContextData;
     }
 
     /**

@@ -23,6 +23,7 @@ class NotificationManager extends utils.Adapter {
   SEND_TO_TIMEOUT = 5e3;
   SUPPORTED_USER_CATEGORIES = ["notify", "info", "alert"];
   USER_SCOPE = "user";
+  CACHE_DELETION_TIME = 30 * 864e5;
   constructor(options = {}) {
     super({
       ...options,
@@ -180,6 +181,13 @@ class NotificationManager extends utils.Adapter {
           });
           continue;
         }
+        const isCached = await this.isNotificationCached({ scopeId, categoryId, category });
+        if (isCached) {
+          this.log.debug(
+            `Skip notification for scope "${scopeId}" and category "${categoryId}", because already sent`
+          );
+          return;
+        }
         const { firstAdapter, secondAdapter } = this.findResponsibleInstances({
           scopeId,
           categoryId,
@@ -208,10 +216,19 @@ class NotificationManager extends utils.Adapter {
               this.log.info(
                 `Instance ${adapterInstance} successfully handled the notification for "${scopeId}.${categoryId}"`
               );
-              await this.sendToHostAsync(host, "clearNotifications", {
-                scope: scopeId,
-                category: categoryId
-              });
+              const deleteWithContextData = this.shouldDeleteWithContextData({ scopeId, categoryId });
+              const hasContextData = this.hasContextData(category);
+              if (!hasContextData || deleteWithContextData) {
+                await this.sendToHostAsync(host, "clearNotifications", {
+                  scope: scopeId,
+                  category: categoryId
+                });
+                return;
+              }
+              if (hasContextData) {
+                await this.cacheNotification({ scopeId, categoryId, category });
+                await this.updateCache();
+              }
               return;
             }
           } catch (e) {
@@ -226,15 +243,68 @@ class NotificationManager extends utils.Adapter {
       }
     }
   }
+  async cacheNotification(options) {
+    var _a;
+    const { scopeId, categoryId, category } = options;
+    const ts = Object.values(category.instances)[0].messages[0].ts;
+    const cacheState = (_a = await this.getStateAsync("cache")) == null ? void 0 : _a.val;
+    let cache = [];
+    if (typeof cacheState === "string") {
+      cache = JSON.parse(cacheState);
+    }
+    cache.push({ scopeId, categoryId, ts });
+    await this.setState("cache", JSON.stringify(cache), true);
+  }
+  async updateCache() {
+    var _a;
+    const cacheState = (_a = await this.getStateAsync("cache")) == null ? void 0 : _a.val;
+    let cache = [];
+    if (typeof cacheState === "string") {
+      cache = JSON.parse(cacheState);
+    }
+    cache = cache.filter((cachedEntry) => cachedEntry.ts > Date.now() - this.CACHE_DELETION_TIME);
+    await this.setState("cache", JSON.stringify(cache), true);
+  }
+  async isNotificationCached(options) {
+    var _a;
+    const { scopeId, category, categoryId } = options;
+    const cacheState = (_a = await this.getStateAsync("cache")) == null ? void 0 : _a.val;
+    let cache = [];
+    if (typeof cacheState === "string") {
+      cache = JSON.parse(cacheState);
+    }
+    for (const cachedEntry of cache) {
+      if (cachedEntry.scopeId !== scopeId || cachedEntry.categoryId !== categoryId) {
+        continue;
+      }
+      const alreadySent = Object.values(category.instances).some(
+        (instance) => instance.messages.some((message) => message.ts === cachedEntry.ts)
+      );
+      if (alreadySent) {
+        return true;
+      }
+    }
+    return false;
+  }
   isCategoryActive(options) {
     var _a, _b;
     const { scopeId, categoryId } = options;
     return ((_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.active) !== false;
   }
+  hasContextData(category) {
+    return Object.values(category.instances).some(
+      (instance) => instance.messages.some((message) => !!message.contextData)
+    );
+  }
   isCategorySuppressed(options) {
     var _a, _b;
     const { scopeId, categoryId } = options;
     return !!((_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.suppress);
+  }
+  shouldDeleteWithContextData(options) {
+    var _a, _b;
+    const { scopeId, categoryId } = options;
+    return !!((_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.deleteWithContextData);
   }
   async localize(scopeOrCategory) {
     const config = await this.getForeignObjectAsync("system.config");
