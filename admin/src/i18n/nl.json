@@ -1,14 +1,16 @@
 {
-    "notification-manager adapter settings": "Adapterinstellingen voor notification-manager",
-    "firstAdapter": "Eerste adapter",
-    "secondAdapter": "Tweede adapter",
-    "notRunning": "Start eerst de adapter!",
-    "selectAdapterInstance": "Selecteer instantie",
-    "mainSettings": "Belangrijkste instellingen",
-    "additionalSettings": "Aanvullende instellingen",
-    "fallbackSettings": "Fallback-instellingen",
-    "severity": "Ernst",
-    "categoryActive": "Categorie actief",
-    "testMessage": "Stuur een testbericht",
-    "suppressCategory": "Berichten voor deze categorie onderdrukken"
+  "The second adapter is used if the first adapter is not able to process the message.": "De tweede adapter wordt gebruikt als de eerste adapter het bericht niet kan verwerken.",
+  "additionalSettings": "Aanvullende instellingen",
+  "categoryActive": "Categorie actief",
+  "deleteWithContextData": "Verwijder ook meldingen wanneer contextuele gegevens beschikbaar zijn voor verdere interactie",
+  "fallbackSettings": "Fallback-instellingen",
+  "firstAdapter": "Eerste adapter",
+  "mainSettings": "Belangrijkste instellingen",
+  "notRunning": "Start eerst de adapter!",
+  "notification-manager adapter settings": "Adapterinstellingen voor notification-manager",
+  "secondAdapter": "Tweede adapter",
+  "selectAdapterInstance": "Selecteer instantie",
+  "severity": "Ernst",
+  "suppressCategory": "Berichten voor deze categorie onderdrukken",
+  "testMessage": "Stuur een testbericht"
 }

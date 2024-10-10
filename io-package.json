@@ -310,5 +310,20 @@
     }
   },
   "objects": [],
-  "instanceObjects": []
+  "instanceObjects": [
+    {
+      "_id": "cache",
+      "type": "state",
+      "common": {
+        "type": "array",
+        "role": "list",
+        "read": true,
+        "write": false,
+        "name": "Cache",
+        "desc": "Cache of already sent notifications",
+        "def": "[]"
+      },
+      "native": {}
+    }
+  ]
 }

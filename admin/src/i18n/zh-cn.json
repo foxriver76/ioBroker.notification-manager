@@ -1,14 +1,16 @@
 {
-    "notification-manager adapter settings": "notification-manager的适配器设置",
-    "firstAdapter": "第一个适配器",
-    "secondAdapter": "第二个适配器",
-    "notRunning": "请先启动适配器！",
-    "selectAdapterInstance": "选择实例",
-    "mainSettings": "主要设置",
-    "additionalSettings": "其他设置",
-    "fallbackSettings": "回退设置",
-    "severity": "严重程度",
-    "categoryActive": "活动类别",
-    "testMessage": "发送测试消息",
-    "suppressCategory": "抑制该类别的信息"
+  "The second adapter is used if the first adapter is not able to process the message.": "如果第一个适配器无法处理该消息，则使用第二个适配器。",
+  "additionalSettings": "其他设置",
+  "categoryActive": "活动类别",
+  "deleteWithContextData": "当上下文数据可用于进一步交互时，还删除通知",
+  "fallbackSettings": "回退设置",
+  "firstAdapter": "第一个适配器",
+  "mainSettings": "主要设置",
+  "notRunning": "请先启动适配器！",
+  "notification-manager adapter settings": "notification-manager的适配器设置",
+  "secondAdapter": "第二个适配器",
+  "selectAdapterInstance": "选择实例",
+  "severity": "严重程度",
+  "suppressCategory": "抑制该类别的信息",
+  "testMessage": "发送测试消息"
 }

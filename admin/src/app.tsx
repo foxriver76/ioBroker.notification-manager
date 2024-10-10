@@ -9,7 +9,7 @@ import type { StyleRules } from '@material-ui/core/styles';
 import type { AdapterNative } from './components/settings';
 
 const styles = (_theme: Theme): StyleRules => ({
-    root: {}
+    root: {},
 });
 
 class App extends GenericApp {
@@ -29,9 +29,9 @@ class App extends GenericApp {
                 es: require('./i18n/es.json'),
                 pl: require('./i18n/pl.json'),
                 //uk: require('./i18n/uk.json'),
-                'zh-cn': require('./i18n/zh-cn.json')
+                'zh-cn': require('./i18n/zh-cn.json'),
                 /* eslint-enable @typescript-eslint/no-require-imports */
-            }
+            },
         };
 
         super(props, extendedProps);

@@ -1,7 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import type { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
-import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
@@ -9,7 +8,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Button, Tab } from '@material-ui/core';
+import { Box, Button, Tab, Tooltip } from '@material-ui/core';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { I18n } from '@iobroker/adapter-react-v5';
 // @ts-expect-error socket-client also has a cjs export
@@ -22,7 +21,7 @@ import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import {
     KeyboardArrowUp as KeyboardArrowUpIcon,
-    KeyboardArrowDown as KeyboardArrowDownIcon
+    KeyboardArrowDown as KeyboardArrowDownIcon,
 } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWarning } from '@fortawesome/free-solid-svg-icons/faWarning';
@@ -33,85 +32,56 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 const styles = (): Record<string, CreateCSSProperties> => ({
     input: {
         marginTop: 0,
-        minWidth: 400
+        minWidth: 400,
     },
     button: {
-        marginRight: 20
+        marginRight: 20,
     },
     card: {
         textAlign: 'left',
-        margin: 10
+        margin: 10,
     },
     cardHeaderDark: {
         backgroundColor: '#272727',
         color: 'white',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     cardHeader: {
         backgroundColor: 'white',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     media: {
-        height: 180
+        height: 180,
     },
     column: {
         display: 'inline-block',
         verticalAlign: 'top',
-        marginRight: 20
+        marginRight: 20,
     },
     columnLogo: {
         width: 350,
-        marginRight: 0
+        marginRight: 0,
     },
     columnSettings: {
-        width: 'calc(100% - 370px)'
+        width: 'calc(100% - 370px)',
     },
     controlElement: {
-        marginBottom: 5
+        marginBottom: 5,
     },
     settingsRoot: {
         height: 'calc(100% - 64px)',
         overflow: 'scroll',
-        marginLeft: '10px'
-    }
+        marginLeft: '10px',
+    },
 });
 
-interface ConfiguredAdapters {
-    /** If the adapter should just clear the notification without any handling */
-    suppress: boolean;
-    /** Try to first let this adapter handle the notification */
-    firstAdapter: string;
-    /** If first adapter fails, try this one */
-    secondAdapter: string;
-}
-
-interface CategoryConfiguration extends ConfiguredAdapters {
-    /** If category is active */
-    active: boolean;
-}
-
-interface ConfiguredCategories {
-    [scope: string]: {
-        [category: string]: CategoryConfiguration;
-    };
-}
+export type AdapterNative = ioBroker.AdapterConfig;
+type ConfiguredCategories = AdapterNative['categories'];
 
 /** e.g. "scope.category.firstAdapter" */
 type ConfigurationCategoryAttribute = `${string}.${string}.${string}`;
 
 type NotificationsConfig = Notifications[];
-
-type FallbackConfiguration = {
-    [key in Severity]: ConfiguredAdapters;
-};
-
-/** The adapter native attribute */
-export interface AdapterNative {
-    /** Configured notification categories */
-    categories: ConfiguredCategories;
-    /** Fallback adapters per Severity */
-    fallback: FallbackConfiguration;
-}
 
 interface ActiveAdapterOptions {
     /** the scope id */
@@ -178,21 +148,23 @@ interface SettingsState {
     supportedAdapterInstances: string[];
 }
 
+const PRIMARY_COLOR = '#3399cc';
+
 class Settings extends React.Component<SettingsProps, SettingsState> {
     /** Map severity to icon and color */
     private readonly SEVERITY_MAPPING = {
         notify: {
             icon: faBell,
-            color: '#3399cc'
+            color: PRIMARY_COLOR,
         },
         info: {
             icon: faInfoCircle,
-            color: '#3399cc'
+            color: PRIMARY_COLOR,
         },
         alert: {
             icon: faWarning,
-            color: '#ff8f00'
-        }
+            color: '#ff8f00',
+        },
     } as const;
 
     /** Connection to the backend */
@@ -201,19 +173,6 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     constructor(props: SettingsProps) {
         super(props);
         this.state = { cardOpen: {}, supportedAdapterInstances: [], selectedTab: '0' };
-    }
-
-    renderInput(title: AdminWord, attr: string, type: string): React.JSX.Element {
-        return (
-            <TextField
-                label={I18n.t(title)}
-                className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
-                value={this.props.native[attr]}
-                type={type || 'text'}
-                onChange={e => this.props.onChange(attr, e.target.value)}
-                margin="normal"
-            />
-        );
     }
 
     /**
@@ -228,7 +187,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         title: AdminWord,
         attr: ConfigurationCategoryAttribute,
         options: { value: string; title: string }[],
-        style?: React.CSSProperties
+        style?: React.CSSProperties,
     ): React.JSX.Element {
         const [severity, adapterOrder] = attr.split('.').slice(1);
         options.push({ value: '', title: I18n.t('selectAdapterInstance') });
@@ -238,7 +197,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
                 style={{
                     paddingTop: 5,
-                    ...style
+                    ...style,
                 }}
             >
                 <Select
@@ -246,10 +205,18 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                     onChange={e => {
                         this.props.onChange(attr, e.target.value === '_' ? '' : e.target.value);
                     }}
-                    input={<Input name={attr} id={attr + '-helper'} />}
+                    input={
+                        <Input
+                            name={attr}
+                            id={`${attr}-helper`}
+                        />
+                    }
                 >
                     {options.map(item => (
-                        <MenuItem key={'key-' + item.value} value={item.value || '_'}>
+                        <MenuItem
+                            key={`key-${item.value}`}
+                            value={item.value || '_'}
+                        >
                             {item.title}
                         </MenuItem>
                     ))}
@@ -271,7 +238,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         title: AdminWord,
         attr: ConfigurationCategoryAttribute,
         options: { value: string; title: string }[],
-        style?: React.CSSProperties
+        style?: React.CSSProperties,
     ): React.JSX.Element {
         const [scope, category, adapterOrder] = attr.split('.');
         options.push({ value: '', title: I18n.t('selectAdapterInstance') });
@@ -281,7 +248,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
                 style={{
                     paddingTop: 5,
-                    ...style
+                    ...style,
                 }}
             >
                 <Select
@@ -290,10 +257,18 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                         const val = this.preprocessAdapterSelection(attr, e.target.value === '_' ? '' : e.target.value);
                         this.props.onChange('categories', val);
                     }}
-                    input={<Input name={attr} id={attr + '-helper'} />}
+                    input={
+                        <Input
+                            name={attr}
+                            id={`${attr}-helper`}
+                        />
+                    }
                 >
                     {options.map(item => (
-                        <MenuItem key={'key-' + item.value} value={item.value || '_'}>
+                        <MenuItem
+                            key={`key-${item.value}`}
+                            value={item.value || '_'}
+                        >
                             {item.title}
                         </MenuItem>
                     ))}
@@ -318,7 +293,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         }
 
         if (!categories[scope][category]) {
-            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true, suppress: false };
+            categories[scope][category] = {
+                firstAdapter: '',
+                secondAdapter: '',
+                active: true,
+                suppress: false,
+                deleteWithContextData: false,
+            };
         }
 
         for (const [attrName, attr] of Object.entries(attributes)) {
@@ -343,7 +324,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         }
 
         if (!categories[scope][category]) {
-            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true, suppress: false };
+            categories[scope][category] = {
+                firstAdapter: '',
+                secondAdapter: '',
+                active: true,
+                suppress: false,
+                deleteWithContextData: false,
+            };
         }
 
         if (!active) {
@@ -375,7 +362,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         }
 
         if (!categories[scope][category]) {
-            categories[scope][category] = { firstAdapter: '', secondAdapter: '', active: true, suppress: false };
+            categories[scope][category] = {
+                firstAdapter: '',
+                secondAdapter: '',
+                active: true,
+                suppress: false,
+                deleteWithContextData: false,
+            };
         }
 
         categories[scope][category][adapterOrder] = value;
@@ -406,7 +399,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 key={attr}
                 style={{
                     paddingTop: 5,
-                    ...style
+                    ...style,
                 }}
                 className={this.props.classes.controlElement}
                 control={
@@ -415,7 +408,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                         onChange={(_event, checked) =>
                             this.props.onChange(
                                 'categories',
-                                this.preprocessAdapterActive({ scope, category, active: checked })
+                                this.preprocessAdapterActive({ scope, category, active: checked }),
                             )
                         }
                         color="primary"
@@ -449,11 +442,43 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     }
 
     /**
+     * Render the "also delete if context data is available" checkbox
+     *
+     * @param options scope and category information
+     */
+    private renderContextDataDeletionCheckbox(options: ScopeWithCategory): React.ReactNode {
+        const { category, scope } = options;
+
+        if (!this.isCategoryActive({ scope, category })) {
+            return null;
+        }
+
+        return (
+            <FormControlLabel
+                className={this.props.classes.controlElement}
+                control={
+                    <Checkbox
+                        checked={this.props.native.categories[scope]?.[category]?.deleteWithContextData}
+                        onChange={(_event, checked) =>
+                            this.props.onChange(
+                                'categories',
+                                this.preprocessAttributes({ scope, category, deleteWithContextData: checked }),
+                            )
+                        }
+                        color="primary"
+                    />
+                }
+                label={I18n.t('deleteWithContextData')}
+            />
+        );
+    }
+
+    /**
      * Render the "suppress category" checkbox
      *
      * @param options scope and category information
      */
-    private renderSuppressCategoryCheckbox(options: ScopeWithCategory): React.JSX.Element | null {
+    private renderSuppressCategoryCheckbox(options: ScopeWithCategory): React.ReactNode {
         const { category, scope } = options;
 
         if (!this.isCategoryActive({ scope, category })) {
@@ -469,7 +494,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                         onChange={(_event, checked) =>
                             this.props.onChange(
                                 'categories',
-                                this.preprocessAttributes({ scope, category, suppress: checked })
+                                this.preprocessAttributes({ scope, category, suppress: checked }),
                             )
                         }
                         color="primary"
@@ -500,17 +525,31 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                     this.state.supportedAdapterInstances.map(instance => {
                         return { value: instance, title: instance };
                     }),
-                    {}
+                    {},
                 )}
                 <br />
-                {this.renderCategoryAdapterSelect(
-                    'secondAdapter',
-                    `${scope}.${category}.secondAdapter`,
-                    this.state.supportedAdapterInstances.map(instance => {
-                        return { value: instance, title: instance };
-                    }),
-                    {}
-                )}
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    {this.renderCategoryAdapterSelect(
+                        'secondAdapter',
+                        `${scope}.${category}.secondAdapter`,
+                        this.state.supportedAdapterInstances.map(instance => {
+                            return { value: instance, title: instance };
+                        }),
+                        {},
+                    )}
+                    <Tooltip
+                        title={I18n.t(
+                            'The second adapter is used if the first adapter is not able to process the message.',
+                        )}
+                    >
+                        <FontAwesomeIcon
+                            icon={faInfoCircle}
+                            size={'lg'}
+                            style={{ marginLeft: '10px' }}
+                            color={PRIMARY_COLOR}
+                        />
+                    </Tooltip>
+                </Box>
             </div>
         );
     }
@@ -520,14 +559,21 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
      *
      * @param adapter the adapter instance id
      */
-    renderAdapterIcon(adapter: string): React.JSX.Element | null {
+    renderAdapterIcon(adapter: string): React.ReactNode {
         if (!adapter) {
             return null;
         }
 
         const adapterName = adapter.split('.')[0];
 
-        return <img src={`/adapter/${adapterName}/${adapterName}.png`} alt={adapter} width={'40px'} title={adapter} />;
+        return (
+            <img
+                src={`/adapter/${adapterName}/${adapterName}.png`}
+                alt={adapter}
+                width={'40px'}
+                title={adapter}
+            />
+        );
     }
 
     /**
@@ -552,7 +598,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
             <Card
                 sx={{
                     minWidth: 400,
-                    border: this.isDarkMode() ? '1px solid rgba(58,58,58,0.6)' : '1px solid rgba(211,211,211,0.6)'
+                    border: this.isDarkMode() ? '1px solid rgba(58,58,58,0.6)' : '1px solid rgba(211,211,211,0.6)',
                 }}
                 className={this.props.classes.card}
             >
@@ -569,8 +615,8 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     this.setState({
                                         cardOpen: {
                                             ...this.state.cardOpen,
-                                            [elementId]: !this.state.cardOpen[elementId]
-                                        }
+                                            [elementId]: !this.state.cardOpen[elementId],
+                                        },
                                     });
                                 }}
                                 aria-label="expand"
@@ -585,7 +631,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 <div
                     style={{
                         backgroundColor: this.isDarkMode() ? '#3b3b3b' : 'rgba(211,211,211,0.4)',
-                        display: 'flex'
+                        display: 'flex',
                     }}
                 >
                     <Collapse
@@ -601,19 +647,27 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                     <br />
                                     {this.renderAdapterActiveCheckbox(
                                         'categoryActive',
-                                        `${scopeId}.${category.category}.active`
+                                        `${scopeId}.${category.category}.active`,
                                     )}
                                     <br />
                                     {this.renderSuppressCategoryCheckbox({
                                         scope: scopeId,
-                                        category: category.category
+                                        category: category.category,
+                                    })}
+                                    <br />
+                                    {this.renderContextDataDeletionCheckbox({
+                                        scope: scopeId,
+                                        category: category.category,
                                     })}
                                     {this.renderCategoryAdapterSelects({ scope: scopeId, category: category.category })}
                                 </Container>
                                 <div style={{ flex: 1, display: 'flex' }}> {this.renderIcon(category.severity)}</div>
                             </div>
                             <div style={{ flex: 1, display: 'flex', justifyContent: 'end' }}>
-                                <Button variant="contained" onClick={() => this.sendTestMessage(scopeId, category)}>
+                                <Button
+                                    variant="contained"
+                                    onClick={() => this.sendTestMessage(scopeId, category)}
+                                >
                                     <FontAwesomeIcon
                                         icon={faPaperPlane}
                                         size={'xl'}
@@ -639,7 +693,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
     async sendTestMessage(scopeId: string, category: NotificationCategory): Promise<void> {
         const res = await this.conn.sendTo(this.props.namespace, 'sendTestMessage', {
             scopeId,
-            category: category.category
+            category: category.category,
         });
 
         if (res.ack) {
@@ -676,7 +730,10 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 {notificationsConfig.map(scope => {
                     return (
                         <div key={'settings-root'}>
-                            <h2 style={{ color: this.getTextColor(), margin: 10 }} key={scope.scope}>
+                            <h2
+                                style={{ color: this.getTextColor(), margin: 10 }}
+                                key={scope.scope}
+                            >
                                 {scope.name[this.props.language]}
                             </h2>
                             {scope.categories.map(category => {
@@ -707,7 +764,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                 minWidth: 400,
                                 border: this.isDarkMode()
                                     ? '1px solid rgba(58,58,58,0.6)'
-                                    : '1px solid rgba(211,211,211,0.6)'
+                                    : '1px solid rgba(211,211,211,0.6)',
                             }}
                             className={this.props.classes.card}
                         >
@@ -723,13 +780,13 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                             <CardContent
                                 style={{
                                     backgroundColor: this.isDarkMode() ? '#3b3b3b' : 'rgba(211,211,211,0.4)',
-                                    display: 'flex'
+                                    display: 'flex',
                                 }}
                             >
                                 <Container
                                     sx={{
                                         lineHeight: 2,
-                                        color: this.getTextColor()
+                                        color: this.getTextColor(),
                                     }}
                                 >
                                     <div style={{ display: 'flex' }}>
@@ -741,7 +798,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                                 this.state.supportedAdapterInstances.map(instance => {
                                                     return { value: instance, title: instance };
                                                 }),
-                                                {}
+                                                {},
                                             )}
                                             <br />
                                             {this.renderFallbackAdapterSelect(
@@ -750,7 +807,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                                                 this.state.supportedAdapterInstances.map(instance => {
                                                     return { value: instance, title: instance };
                                                 }),
-                                                {}
+                                                {},
                                             )}
                                         </div>
                                     </div>
@@ -774,11 +831,20 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         }
 
         return (
-            <div style={{}} className={this.props.classes.settingsRoot}>
+            <div
+                style={{}}
+                className={this.props.classes.settingsRoot}
+            >
                 <TabContext value={this.state.selectedTab}>
                     <TabList onChange={(_event, value) => this.setState({ selectedTab: value })}>
-                        <Tab label={I18n.t('mainSettings')} value={'0'} />
-                        <Tab label={I18n.t('additionalSettings')} value={'1'} />
+                        <Tab
+                            label={I18n.t('mainSettings')}
+                            value={'0'}
+                        />
+                        <Tab
+                            label={I18n.t('additionalSettings')}
+                            value={'1'}
+                        />
                     </TabList>
                     <TabPanel value={'0'}>{this.renderMainSettings(this.state.notificationsConfig)}</TabPanel>
 
@@ -797,11 +863,11 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         try {
             const { notifications: notificationsConfig } = await this.conn.sendTo(
                 this.props.namespace,
-                'getCategories'
+                'getCategories',
             );
             const { instances: supportedAdapterInstances } = await this.conn.sendTo(
                 this.props.namespace,
-                'getSupportedMessengers'
+                'getSupportedMessengers',
             );
 
             this.setState({ notificationsConfig, supportedAdapterInstances });
