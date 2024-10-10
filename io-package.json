@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "notification-manager",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "news": {
+      "1.3.0": {
+        "en": "by default we do not delete notifications with `contextData`\nadded checkbox to also delete notifications with `contextData` for specific categories",
+        "de": "standardmäßig löschen wir keine Benachrichtigungen mit `context Daten\nhinzugefügt Checkbox, um auch Benachrichtigungen mit `context löschen Daten` für bestimmte Kategorien",
+        "ru": "по умолчанию мы не удаляем уведомления с \"контекстом\" Данные\nдобавленный флажок для удаления уведомлений с \"контекстом\" Данные для конкретных категорий",
+        "pt": "por padrão não eliminamos notificações com `context Dados\nadicionado caixa de seleção para também excluir notificações com `context Dados para categorias específicas",
+        "nl": "standaard verwijderen we geen meldingen met  Gegevens\ntoegevoegd aan selectievakje om ook meldingen te verwijderen met de context Gegevens voor specifieke categorieën",
+        "fr": "par défaut, nous ne supprimons pas les notifications avec `context Données»\ncase à cocher ajoutée pour supprimer également les notifications avec `context Données pour des catégories spécifiques",
+        "it": "per impostazione predefinita non cancelliamo le notifiche con `context Dati\ncasella di controllo aggiunto per eliminare anche le notifiche con `context Dati per categorie specifiche",
+        "es": "por defecto no eliminamos notificaciones con `contexto Datos\ncasilla de verificación agregada para eliminar también notificaciones con `contexto Datos relativos a categorías específicas",
+        "pl": "domyślnie nie usuwamy powiadomień z 'kontekstem Data \"\ndodano pole wyboru, aby również usunąć powiadomienia z 'kontekstem Dane \"dla konkretnych kategorii",
+        "uk": "за замовчуванням ми не видаляти повідомлення з `context Дані\nдодано прапорець, щоб також видалити повідомлення з `context Дані для окремих категорій",
+        "zh-cn": "默认情况下,我们不删除带有“文本”的通知 数据`\n添加复选框以删除带有“ 文本” 的通知 特定类别的数据`"
+      },
       "1.2.1": {
         "en": "fixed issue if host name contains `.`",
         "de": "feste ausgabe, wenn hostname ` enthält. `",
@@ -80,19 +93,6 @@
         "pl": "dostarczać możliwość przesyłania danych docelowych\ndodano wskaźniki UI dla każdej kategorii",
         "uk": "додано можливість надсилати спеціальні повідомлення\nдодано UI показники для кожної категорії",
         "zh-cn": "发出习惯信息的可能性\n增加每个类别UI指标"
-      },
-      "0.1.2": {
-        "en": "also show notifications provided by adapters in the configuration",
-        "de": "auch meldungen von adaptern in der konfiguration anzeigen",
-        "ru": "также показывают уведомления, предоставленные адаптерами в конфигурации",
-        "pt": "também mostrar notificações fornecidas por adaptadores na configuração",
-        "nl": "laat ook berichten zien door adapters in de configuratie",
-        "fr": "afficher également les notifications fournies par les adaptateurs dans la configuration",
-        "it": "anche mostrare le notifiche fornite dagli adattatori nella configurazione",
-        "es": "también mostrar notificaciones proporcionadas por los adaptadores en la configuración",
-        "pl": "wykazuje również powiadomienia dostarczone przez adapterów w konfiguracji",
-        "uk": "також показати повідомлення, що надаються адаптерами в конфігурації",
-        "zh-cn": "组合的适应者也发出通知"
       }
     },
     "title": "Notification Manager",
