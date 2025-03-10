@@ -142,7 +142,7 @@
     "readme": "https://github.com/foxriver76/ioBroker.notification-manager/blob/main/README.md",
     "loglevel": "info",
     "mode": "daemon",
-    "type": "utility",
+    "type": "messaging",
     "compact": true,
     "connectionType": "local",
     "dataSource": "push",
