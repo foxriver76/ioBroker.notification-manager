@@ -145,7 +145,7 @@ if the messaging adapter was able to deliver the notification, else it should re
 ## License
 MIT License
 
-Copyright (c) 2024 foxriver76 <moritz.heusinger@gmail.com>
+Copyright (c) 2024-2025 foxriver76 <moritz.heusinger@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
