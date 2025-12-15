@@ -135,7 +135,6 @@
       "license": "MIT"
     },
     "platform": "Javascript/Node.js",
-    "main": "build/main.js",
     "icon": "notification-manager.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/foxriver76/ioBroker.notification-manager/main/admin/notification-manager.png",
