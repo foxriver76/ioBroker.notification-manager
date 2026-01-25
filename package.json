@@ -9,6 +9,7 @@
   "homepage": "https://github.com/foxriver76/ioBroker.notification-manager",
   "license": "MIT",
   "keywords": [
+    "ioBroker",
     "notifications",
     "messages"
   ],
