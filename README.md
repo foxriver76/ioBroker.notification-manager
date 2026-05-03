@@ -142,6 +142,8 @@ if the messaging adapter was able to deliver the notification, else it should re
 ### 0.1.0 (2023-06-02)
 * (foxriver76) initial release
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 MIT License
 
