@@ -111,6 +111,10 @@ if the messaging adapter was able to deliver the notification, else it should re
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
+
 ### 1.3.0 (2024-10-10)
 * (@foxriver76) by default we do not delete notifications with `contextData`
 * (@foxriver76) added checkbox to also delete notifications with `contextData` for specific categories
