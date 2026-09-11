@@ -107,6 +107,9 @@ After sending the notification, the `notification-manager` expects an answer wit
 if the messaging adapter was able to deliver the notification, else it should respond with `{ sent: false }`.
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 22 now.
 <!--
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
