@@ -8,6 +8,7 @@
   "mainSettings": "Ustawienia główne",
   "notRunning": "Najpierw uruchom adapter!",
   "notification-manager adapter settings": "Ustawienia adaptera dla notification-manager",
+  "pushoverUserOrGroupKey": "Klucz użytkownika lub grupy Pushover",
   "secondAdapter": "Drugi adapter",
   "selectAdapterInstance": "Wybierz instancję",
   "severity": "Powaga",

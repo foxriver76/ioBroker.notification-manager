@@ -150,18 +150,30 @@ class NotificationManager extends utils.Adapter {
     return res.rows.map((host) => host.id);
   }
   findResponsibleInstances(options) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     const { scopeId, categoryId, severity } = options;
     return {
       firstAdapter: {
         main: (_b = (_a = this.config.categories[scopeId]) == null ? void 0 : _a[categoryId]) == null ? void 0 : _b.firstAdapter,
-        fallback: this.config.fallback[severity].firstAdapter
+        mainRecipient: (_d = (_c = this.config.categories[scopeId]) == null ? void 0 : _c[categoryId]) == null ? void 0 : _d.firstAdapterRecipient,
+        fallback: this.config.fallback[severity].firstAdapter,
+        fallbackRecipient: this.config.fallback[severity].firstAdapterRecipient
       },
       secondAdapter: {
-        main: (_d = (_c = this.config.categories[scopeId]) == null ? void 0 : _c[categoryId]) == null ? void 0 : _d.secondAdapter,
-        fallback: this.config.fallback[severity].secondAdapter
+        main: (_f = (_e = this.config.categories[scopeId]) == null ? void 0 : _e[categoryId]) == null ? void 0 : _f.secondAdapter,
+        mainRecipient: (_h = (_g = this.config.categories[scopeId]) == null ? void 0 : _g[categoryId]) == null ? void 0 : _h.secondAdapterRecipient,
+        fallback: this.config.fallback[severity].secondAdapter,
+        fallbackRecipient: this.config.fallback[severity].secondAdapterRecipient
       }
     };
+  }
+  getRecipientField(adapterInstance) {
+    switch (adapterInstance.split(".")[0]) {
+      case "pushover":
+        return "user";
+      default:
+        return void 0;
+    }
   }
   async sendNotifications(options) {
     const { notifications, host } = options;
@@ -198,6 +210,7 @@ class NotificationManager extends utils.Adapter {
           if (!adapterInstance) {
             continue;
           }
+          const recipient = configuredAdapter.main ? configuredAdapter.mainRecipient : configuredAdapter.fallbackRecipient;
           const bareScope = {
             name: scope.name,
             description: scope.description
@@ -208,6 +221,10 @@ class NotificationManager extends utils.Adapter {
             scope: await this.localize(bareScope),
             category: await this.localize(category)
           };
+          const recipientField = this.getRecipientField(adapterInstance);
+          if (recipientField && (recipient == null ? void 0 : recipient.trim())) {
+            localizedNotification[recipientField] = recipient.trim();
+          }
           try {
             const res = await this.sendToAsync(adapterInstance, "sendNotification", localizedNotification, {
               timeout: this.SEND_TO_TIMEOUT

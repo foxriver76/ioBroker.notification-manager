@@ -190,39 +190,55 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         style?: React.CSSProperties,
     ): React.JSX.Element {
         const [severity, adapterOrder] = attr.split('.').slice(1);
+        const recipientAttribute = `fallback.${severity}.${adapterOrder}Recipient` as ConfigurationCategoryAttribute;
+        const recipientKey = `${adapterOrder}Recipient`;
+        const recipientInput = this.renderPushoverRecipientInput(
+            this.props.native.fallback[severity][adapterOrder],
+            recipientAttribute,
+            this.props.native.fallback[severity][recipientKey],
+            value => this.props.onChange(recipientAttribute, value),
+        );
         options.push({ value: '', title: I18n.t('selectAdapterInstance') });
 
         return (
-            <FormControl
-                className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
-                style={{
-                    paddingTop: 5,
-                    ...style,
-                }}
-            >
-                <Select
-                    value={this.props.native.fallback[severity][adapterOrder] || '_'}
-                    onChange={e => {
-                        this.props.onChange(attr, e.target.value === '_' ? '' : e.target.value);
+            <>
+                <FormControl
+                    className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
+                    style={{
+                        paddingTop: 5,
+                        ...style,
                     }}
-                    input={
-                        <Input
-                            name={attr}
-                            id={`${attr}-helper`}
-                        />
-                    }
                 >
-                    {options.map(item => (
-                        <MenuItem
-                            key={`key-${item.value}`}
-                            value={item.value || '_'}
-                        >
-                            {item.title}
-                        </MenuItem>
-                    ))}
-                </Select>
-                <FormHelperText>{I18n.t(title)}</FormHelperText>
-            </FormControl>
+                    <Select
+                        value={this.props.native.fallback[severity][adapterOrder] || '_'}
+                        onChange={e => {
+                            this.props.onChange(attr, e.target.value === '_' ? '' : e.target.value);
+                        }}
+                        input={
+                            <Input
+                                name={attr}
+                                id={`${attr}-helper`}
+                            />
+                        }
+                    >
+                        {options.map(item => (
+                            <MenuItem
+                                key={`key-${item.value}`}
+                                value={item.value || '_'}
+                            >
+                                {item.title}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <FormHelperText>{I18n.t(title)}</FormHelperText>
+                </FormControl>
+                {recipientInput && (
+                    <>
+                        <br />
+                        {recipientInput}
+                    </>
+                )}
+            </>
         );
     }
 
@@ -241,39 +257,90 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
         style?: React.CSSProperties,
     ): React.JSX.Element {
         const [scope, category, adapterOrder] = attr.split('.');
+        const recipientAttribute = `${scope}.${category}.${adapterOrder}Recipient` as ConfigurationCategoryAttribute;
+        const recipientKey = `${adapterOrder}Recipient`;
+        const recipientInput = this.renderPushoverRecipientInput(
+            this.props.native.categories[scope]?.[category]?.[adapterOrder],
+            recipientAttribute,
+            this.props.native.categories[scope]?.[category]?.[recipientKey],
+            value =>
+                this.props.onChange(
+                    'categories',
+                    this.preprocessAttributes({ scope, category, [recipientKey]: value }),
+                ),
+        );
         options.push({ value: '', title: I18n.t('selectAdapterInstance') });
 
         return (
-            <FormControl
-                className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
-                style={{
-                    paddingTop: 5,
-                    ...style,
-                }}
-            >
-                <Select
-                    value={this.props.native.categories[scope]?.[category]?.[adapterOrder] || '_'}
-                    onChange={e => {
-                        const val = this.preprocessAdapterSelection(attr, e.target.value === '_' ? '' : e.target.value);
-                        this.props.onChange('categories', val);
+            <>
+                <FormControl
+                    className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
+                    style={{
+                        paddingTop: 5,
+                        ...style,
                     }}
-                    input={
-                        <Input
-                            name={attr}
-                            id={`${attr}-helper`}
-                        />
-                    }
                 >
-                    {options.map(item => (
-                        <MenuItem
-                            key={`key-${item.value}`}
-                            value={item.value || '_'}
-                        >
-                            {item.title}
-                        </MenuItem>
-                    ))}
-                </Select>
-                <FormHelperText>{I18n.t(title)}</FormHelperText>
+                    <Select
+                        value={this.props.native.categories[scope]?.[category]?.[adapterOrder] || '_'}
+                        onChange={e => {
+                            const val = this.preprocessAdapterSelection(attr, e.target.value === '_' ? '' : e.target.value);
+                            this.props.onChange('categories', val);
+                        }}
+                        input={
+                            <Input
+                                name={attr}
+                                id={`${attr}-helper`}
+                            />
+                        }
+                    >
+                        {options.map(item => (
+                            <MenuItem
+                                key={`key-${item.value}`}
+                                value={item.value || '_'}
+                            >
+                                {item.title}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <FormHelperText>{I18n.t(title)}</FormHelperText>
+                </FormControl>
+                {recipientInput && (
+                    <>
+                        <br />
+                        {recipientInput}
+                    </>
+                )}
+            </>
+        );
+    }
+
+    /**
+     * Render the recipient input for adapters with a supported recipient field
+     *
+     * @param adapterInstance the selected adapter instance
+     * @param attr the path for the stored recipient
+     * @param value the configured recipient
+     * @param onChange callback when the recipient changes
+     */
+    private renderPushoverRecipientInput(
+        adapterInstance: string | undefined,
+        attr: ConfigurationCategoryAttribute,
+        value: string | undefined,
+        onChange: (value: string) => void,
+    ): React.ReactNode {
+        if (adapterInstance?.split('.')[0] !== 'pushover') {
+            return null;
+        }
+
+        return (
+            <FormControl className={`${this.props.classes.input} ${this.props.classes.controlElement}`}>
+                <Input
+                    name={attr}
+                    id={`${attr}-helper`}
+                    value={value || ''}
+                    onChange={e => onChange(e.target.value)}
+                />
+                <FormHelperText>{I18n.t('pushoverUserOrGroupKey')}</FormHelperText>
             </FormControl>
         );
     }

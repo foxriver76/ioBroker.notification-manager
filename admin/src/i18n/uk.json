@@ -8,6 +8,7 @@
   "mainSettings": "Основні налаштування",
   "notRunning": "Спочатку запустіть адаптер!",
   "notification-manager adapter settings": "Налаштування адаптера для notification-manager",
+  "pushoverUserOrGroupKey": "Ключ користувача або групи Pushover",
   "secondAdapter": "Другий адаптер",
   "selectAdapterInstance": "Виберіть екземпляр",
   "severity": "Суворість",

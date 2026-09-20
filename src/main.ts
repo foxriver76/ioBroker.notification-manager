@@ -86,14 +86,22 @@ interface ResponsibleInstances {
     firstAdapter: {
         /** highest priority adapter instance */
         main?: string;
+        /** optional recipient for the configured adapter instance */
+        mainRecipient?: string;
         /** second priority adapter instance */
         fallback: string;
+        /** optional recipient for the fallback adapter instance */
+        fallbackRecipient?: string;
     };
     secondAdapter: {
         /** Fallback instance for the first instance */
         main?: string;
+        /** optional recipient for the configured adapter instance */
+        mainRecipient?: string;
         /** Fallback instance for the second instance */
         fallback: string;
+        /** optional recipient for the fallback adapter instance */
+        fallbackRecipient?: string;
     };
 }
 
@@ -104,6 +112,8 @@ interface LocalizedNotification {
     scope: Omit<LocalizedNotificationScope, 'categories'>;
     /** The localized category of the notification */
     category: LocalizedNotificationCategory;
+    /** Pushover user or group key */
+    user?: string;
 }
 
 interface CachedEntry {
@@ -341,13 +351,31 @@ class NotificationManager extends utils.Adapter {
         return {
             firstAdapter: {
                 main: this.config.categories[scopeId]?.[categoryId]?.firstAdapter,
+                mainRecipient: this.config.categories[scopeId]?.[categoryId]?.firstAdapterRecipient,
                 fallback: this.config.fallback[severity].firstAdapter,
+                fallbackRecipient: this.config.fallback[severity].firstAdapterRecipient,
             },
             secondAdapter: {
                 main: this.config.categories[scopeId]?.[categoryId]?.secondAdapter,
+                mainRecipient: this.config.categories[scopeId]?.[categoryId]?.secondAdapterRecipient,
                 fallback: this.config.fallback[severity].secondAdapter,
+                fallbackRecipient: this.config.fallback[severity].secondAdapterRecipient,
             },
         };
+    }
+
+    /**
+     * Get the recipient field supported by a notification adapter
+     *
+     * @param adapterInstance the selected adapter instance
+     */
+    private getRecipientField(adapterInstance: string): 'user' | undefined {
+        switch (adapterInstance.split('.')[0]) {
+            case 'pushover':
+                return 'user';
+            default:
+                return undefined;
+        }
     }
 
     /**
@@ -401,6 +429,10 @@ class NotificationManager extends utils.Adapter {
                         continue;
                     }
 
+                    const recipient = configuredAdapter.main
+                        ? configuredAdapter.mainRecipient
+                        : configuredAdapter.fallbackRecipient;
+
                     const bareScope: Omit<NotificationScope, 'categories'> = {
                         name: scope.name,
                         description: scope.description,
@@ -413,6 +445,11 @@ class NotificationManager extends utils.Adapter {
                         scope: await this.localize(bareScope),
                         category: await this.localize(category),
                     };
+
+                    const recipientField = this.getRecipientField(adapterInstance);
+                    if (recipientField && recipient?.trim()) {
+                        localizedNotification[recipientField] = recipient.trim();
+                    }
 
                     try {
                         const res = await this.sendToAsync(adapterInstance, 'sendNotification', localizedNotification, {
