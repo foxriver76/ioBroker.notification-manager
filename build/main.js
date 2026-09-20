@@ -170,7 +170,7 @@ class NotificationManager extends utils.Adapter {
   getRecipientField(adapterInstance) {
     switch (adapterInstance.split(".")[0]) {
       case "pushover":
-        return "user";
+        return "device";
       default:
         return void 0;
     }

@@ -8,7 +8,7 @@
   "mainSettings": "主要设置",
   "notRunning": "请先启动适配器！",
   "notification-manager adapter settings": "notification-manager的适配器设置",
-  "pushoverUserOrGroupKey": "Pushover 用户或群组密钥",
+  "pushoverDeviceName": "Pushover 设备名称",
   "secondAdapter": "第二个适配器",
   "selectAdapterInstance": "选择实例",
   "severity": "严重程度",

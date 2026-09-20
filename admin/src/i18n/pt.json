@@ -8,7 +8,7 @@
   "mainSettings": "Configurações principais",
   "notRunning": "Inicie o adaptador primeiro!",
   "notification-manager adapter settings": "Configurações do adaptador para notification-manager",
-  "pushoverUserOrGroupKey": "Chave de usuário ou grupo do Pushover",
+  "pushoverDeviceName": "Nome do dispositivo Pushover",
   "secondAdapter": "Segundo adaptador",
   "selectAdapterInstance": "Selecionar instância",
   "severity": "Gravidade",

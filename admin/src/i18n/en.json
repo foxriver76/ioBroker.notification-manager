@@ -8,7 +8,7 @@
   "mainSettings": "Main settings",
   "notRunning": "Please start the adapter first!",
   "notification-manager adapter settings": "Adapter settings for notification-manager",
-  "pushoverUserOrGroupKey": "Pushover user or group key",
+  "pushoverDeviceName": "Pushover device name",
   "secondAdapter": "Second adapter",
   "selectAdapterInstance": "Select instance",
   "severity": "Severity",

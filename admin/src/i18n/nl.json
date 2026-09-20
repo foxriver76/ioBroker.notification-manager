@@ -8,7 +8,7 @@
   "mainSettings": "Belangrijkste instellingen",
   "notRunning": "Start eerst de adapter!",
   "notification-manager adapter settings": "Adapterinstellingen voor notification-manager",
-  "pushoverUserOrGroupKey": "Pushover gebruikers- of groepssleutel",
+  "pushoverDeviceName": "Pushover apparaatnaam",
   "secondAdapter": "Tweede adapter",
   "selectAdapterInstance": "Selecteer instantie",
   "severity": "Ernst",

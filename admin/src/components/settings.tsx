@@ -340,7 +340,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                     value={value || ''}
                     onChange={e => onChange(e.target.value)}
                 />
-                <FormHelperText>{I18n.t('pushoverUserOrGroupKey')}</FormHelperText>
+                <FormHelperText>{I18n.t('pushoverDeviceName')}</FormHelperText>
             </FormControl>
         );
     }

@@ -112,8 +112,8 @@ interface LocalizedNotification {
     scope: Omit<LocalizedNotificationScope, 'categories'>;
     /** The localized category of the notification */
     category: LocalizedNotificationCategory;
-    /** Pushover user or group key */
-    user?: string;
+    /** Pushover device name */
+    device?: string;
 }
 
 interface CachedEntry {
@@ -369,10 +369,10 @@ class NotificationManager extends utils.Adapter {
      *
      * @param adapterInstance the selected adapter instance
      */
-    private getRecipientField(adapterInstance: string): 'user' | undefined {
+    private getRecipientField(adapterInstance: string): 'device' | undefined {
         switch (adapterInstance.split('.')[0]) {
             case 'pushover':
-                return 'user';
+                return 'device';
             default:
                 return undefined;
         }
