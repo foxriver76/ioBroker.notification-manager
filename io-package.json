@@ -297,15 +297,21 @@
     "fallback": {
       "info": {
         "firstAdapter": "",
-        "secondAdapter": ""
+        "firstAdapterRecipient": "",
+        "secondAdapter": "",
+        "secondAdapterRecipient": ""
       },
       "notify": {
         "firstAdapter": "",
-        "secondAdapter": ""
+        "firstAdapterRecipient": "",
+        "secondAdapter": "",
+        "secondAdapterRecipient": ""
       },
       "alert": {
         "firstAdapter": "",
-        "secondAdapter": ""
+        "firstAdapterRecipient": "",
+        "secondAdapter": "",
+        "secondAdapterRecipient": ""
       }
     }
   },

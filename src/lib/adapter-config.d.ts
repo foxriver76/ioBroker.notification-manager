@@ -4,8 +4,12 @@ type Severity = 'info' | 'notify' | 'alert';
 interface ConfiguredAdapters {
     /** Try to first let this adapter handle the notification */
     firstAdapter: string;
+    /** Optional user, group or other recipient for the first adapter */
+    firstAdapterRecipient?: string;
     /** If first adapter fails, try this one */
     secondAdapter: string;
+    /** Optional user, group or other recipient for the second adapter */
+    secondAdapterRecipient?: string;
 }
 
 interface CategoryConfiguration extends ConfiguredAdapters {
